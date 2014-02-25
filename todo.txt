@@ -1,0 +1,5 @@
+Semana 24 al 1 marzo
+==========================
+1. Writte a code that find de number of associations given a potential threshold.
+2. Take into account the velocites of the subhalos in order to find the correct binding systems.
+--------------------------
