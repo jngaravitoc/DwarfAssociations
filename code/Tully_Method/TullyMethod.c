@@ -74,7 +74,7 @@ int main(){
  distances(x, y, z, D);
  center_mass(m, D, cm, n_points);
 for(i=0;i<n_points;i++){
- printf("esto es cm en el main %f \t %f  \n", cm[i], D[i]);
+ printf("%f \t %f  \n", D[i], cm[i]);
 }
  return 0;
 
@@ -84,8 +84,8 @@ float  * distances(float *x, float *y, float *z, float *D){
 
   int i; 
    for(i=0;i<99;i++){
-   D[i] = pow(x[i],2) + pow(y[i],2) + pow(z[i],2);
-   // printf("DDD %f \n", D[i]);
+   D[i] = pow(pow(x[i],2) + pow(y[i],2) + pow(z[i],2), 0.5);
+
     }
   return D;
 }
@@ -95,17 +95,13 @@ float *  center_mass(float *m, float *D, float *cm, int n_points){
   
   int i;
   int j;
-  //printf("cm inicial %f ", cm[0]);
   for(i=0;i<n_points;i++){
     for(j=0;j<n_points;j++){
-      if(j!=i){
-	cm[i]=m[i]*pow(D[i],2) /(m[j]+m[i]) + (m[j]*pow(D[j],2)/(m[i] + m[j])) - (m[i]*m[j]*pow(D[i]-D[j],2)/(pow((m[i]+m[j]),2)));
-	//printf("Cm \t  %f \n", cm[i]);
+      if(i!=j){
+	cm[i]=(m[i]*pow(D[i],2) /(m[j]+m[i])) + (m[j]*pow(D[j],2)/(m[i] + m[j])) - (m[i]*m[j]*pow((D[i]-D[j]),2)/(pow((m[i]+m[j]),2)));
       }
   }
   }
-  //for(i=0;i<n_points;i++){
-    //printf("Cm \t  %f \n", cm[i]);
-  //  } 
+ 
  return cm;
 }
