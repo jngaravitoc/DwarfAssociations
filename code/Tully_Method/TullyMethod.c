@@ -1,3 +1,14 @@
+/*
+TO DO:
+1- Fixed difference in codes in the cm distance
+2- Write merging function
+3- Review Tully Method.
+
+*/
+
+
+
+
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
