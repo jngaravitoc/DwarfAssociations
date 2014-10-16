@@ -67,7 +67,9 @@ def new_particle(filename):
     data = np.loadtxt(filename)
     indexp = np.where(ID == id_p)
     indexq = np.where(ID == id_q)
-    print "indexp", id_p, "indexq", indexq
+    print "1p to merg", id_p
+    print "2p to merge", id_q
+    print "New mass of new particle", new_M
     xp = x[indexp]
     yp = y[indexp]
     zp = z[indexp]
@@ -79,11 +81,12 @@ def new_particle(filename):
     Mp = M[indexp]
     Mq = M[indexq]
     Mpq = Mp + Mq
-    print Mp, xp, Mq, xq, Mpq
+    #print Mp, xp, Mq, xq, Mpq
     xt = 1 / Mpq * (Mp*xp + Mq*xq)
     yt = 1 / Mpq * (Mp*yp + Mq*yq)
     zt = 1 / Mpq * (Mp*zp + Mq*zq)
-    print N+1, xt, yt, zt, new_M
+    #print N+1, xt, yt, zt, new_M
+    print "New x", xt, "New y", yt, "New z", zt
     #X = np.array([N, xt, yt, zt, new_M])
     if IDp > IDq:
       data = np.delete(data, IDp, 0)
@@ -100,6 +103,9 @@ def new_particle(filename):
 
     return len(data)
 LD = 100
-while LD>1:
+merging = float(sys.argv[1])
+while LD>merging:
   LD = new_particle(filename)
   print LD
+
+# hashmap
