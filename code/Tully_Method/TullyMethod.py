@@ -82,9 +82,12 @@ def new_particle(filename):
       data = np.delete(data, IDq, 0)
       data = np.delete(data, IDp, 0)
 
-    np.insert(data, N, X)
+    #np.insert(data, np.size(data), X)
+    print X
 
-    return  data, X
-data, X = new_particle(filename)
-print X
-print data
+    f = open("data.dat", "w")
+    for i in range(len(data)):
+      f.write(("%f \t %f \t %f \t %f \t %f \n")%(data[i,0], data[i,1], data[i,2], data[i,3], data[i,4]))
+    f.write(("%f \t %f \t %f \t %f \t %f \n")%(N+1, xt, yt, zt, new_M))
+    f.close()
+new_particle(filename)
