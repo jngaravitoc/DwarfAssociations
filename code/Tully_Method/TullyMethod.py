@@ -2,7 +2,12 @@ import numpy as np
 from array import array
 import sys
 
-filename = "HRbcku.txt"
+# TO DO:
+# 1. Fix problem of the id
+# 2. Iterate for all particles.
+# 3. check if NEW_mas is correct
+
+filename = "data.dat"
 #filename2  = sys.argv[1]
 N = 99 # Numero de lineas inicial
 
@@ -13,6 +18,8 @@ def reading(filename):
   y = data[:,2]
   z = data[:,3]
   M = data[:,4]
+
+
   return ID, x, y, z, M
 
 
@@ -60,6 +67,7 @@ def new_particle(filename):
     data = np.loadtxt(filename)
     indexp = np.where(ID == id_p)
     indexq = np.where(ID == id_q)
+    print "indexp", id_p, "indexq", indexq
     xp = x[indexp]
     yp = y[indexp]
     zp = z[indexp]
@@ -71,10 +79,12 @@ def new_particle(filename):
     Mp = M[indexp]
     Mq = M[indexq]
     Mpq = Mp + Mq
+    print Mp, xp, Mq, xq, Mpq
     xt = 1 / Mpq * (Mp*xp + Mq*xq)
     yt = 1 / Mpq * (Mp*yp + Mq*yq)
     zt = 1 / Mpq * (Mp*zp + Mq*zq)
-    X = np.array([N, xt, yt, zt, new_M])
+    print N+1, xt, yt, zt, new_M
+    #X = np.array([N, xt, yt, zt, new_M])
     if IDp > IDq:
       data = np.delete(data, IDp, 0)
       data = np.delete(data, IDq, 0)
@@ -82,12 +92,14 @@ def new_particle(filename):
       data = np.delete(data, IDq, 0)
       data = np.delete(data, IDp, 0)
 
-    #np.insert(data, np.size(data), X)
-    print X
-
     f = open("data.dat", "w")
     for i in range(len(data)):
       f.write(("%f \t %f \t %f \t %f \t %f \n")%(data[i,0], data[i,1], data[i,2], data[i,3], data[i,4]))
     f.write(("%f \t %f \t %f \t %f \t %f \n")%(N+1, xt, yt, zt, new_M))
     f.close()
-new_particle(filename)
+
+    return len(data)
+LD = 100
+while LD>1:
+  LD = new_particle(filename)
+  print LD
