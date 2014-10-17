@@ -3,8 +3,7 @@ from array import array
 import sys
 
 # TO DO:
-# 1. Fix problem of the id
-# 2. Iterate for all particles.
+# 1. Fix problem of the id, possile solution choose by Position
 # 3. check if NEW_mas is correct
 
 filename = "data.dat"
@@ -49,7 +48,7 @@ def force(filename):
                         Mt = M[p] + M[q]
                         r_cm = np.sqrt( (M[p] / (Mt) * r[j+p*N]**2 )+ (M[q] / (Mt) * r[j + q*N]**2) - (M[p]*M[q] / Mt**2 * r[q+p*N]**2) )
                         R.append(r_cm)
-                        idp.append(p)
+                        idp.append(p)# Acá poner seleccion por posición! 
                         idq.append(q)
                         if Mt > M[j]:
                             F.append(1/(r_cm**2/Mt))
