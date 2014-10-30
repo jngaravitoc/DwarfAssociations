@@ -48,24 +48,28 @@ def force(filename):
                         Mt = M[p] + M[q]
                         r_cm = np.sqrt( (M[p] / (Mt) * r[j+p*N]**2 )+ (M[q] / (Mt) * r[j + q*N]**2) - (M[p]*M[q] / Mt**2 * r[q+p*N]**2) )
                         R.append(r_cm)
-                        idp.append(p)# Acá poner seleccion por posición! 
-                        idq.append(q)
+                        idp.append(M[p])# Ac poner seleccion p
+                        idq.append(M[q])
                         if Mt > M[j]:
                             F.append(1/(r_cm**2/Mt))
                             MT.append(Mt)
-                        elif M[j] > Mt:
+                        else:
                             F.append(1/(r_cm**2/M[j]))
                             MT.append(M[j])
     index = np.where(F == min(F))
     index =  index[0][1]
+    print idp[index], idq[index], MT[index]
 
-    return idp[index], idq[index], MT[index], ID, x, y, z, M
+    return idp[index], idq[index], MT[index], x, y, z, M
+    #return x[index], y[index], z[index], MT[index], ID, x, y, z, M
+
 
 def new_particle(filename):
-    id_p, id_q, new_M, ID, x, y, z, M = force(filename)
+    id_p, id_q, new_M, x, y, z, M = force(filename)
     data = np.loadtxt(filename)
-    indexp = np.where(ID == id_p)
-    indexq = np.where(ID == id_q)
+    #index = np.where
+    indexp = np.where(M == id_p)
+    indexq = np.where(M == id_q)
     print "1p to merg", id_p
     print "2p to merge", id_q
     print "New mass of new particle", new_M
@@ -75,8 +79,8 @@ def new_particle(filename):
     xq = x[indexq]
     yq = y[indexq]
     zq = z[indexq]
-    IDp = ID[indexp]
-    IDq = ID[indexq]
+    IDp = M[indexp]
+    IDq = M[indexq]
     Mp = M[indexp]
     Mq = M[indexq]
     Mpq = Mp + Mq
@@ -87,13 +91,10 @@ def new_particle(filename):
     #print N+1, xt, yt, zt, new_M
     print "New x", xt, "New y", yt, "New z", zt
     #X = np.array([N, xt, yt, zt, new_M])
-    if IDp > IDq:
-      data = np.delete(data, IDp, 0)
-      data = np.delete(data, IDq, 0)
-    else:
-      data = np.delete(data, IDq, 0)
-      data = np.delete(data, IDp, 0)
+    data = np.delete(data, indexp, 0)
+    data = np.delete(data, indexq, 0)
 
+    print new_M, xt
     f = open("data.dat", "w")
     for i in range(len(data)):
       f.write(("%f \t %f \t %f \t %f \t %f \n")%(data[i,0], data[i,1], data[i,2], data[i,3], data[i,4]))
