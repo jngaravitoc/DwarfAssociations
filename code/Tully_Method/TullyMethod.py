@@ -31,10 +31,12 @@ def distances(filename):
             #print "distancia de: ", i, "a: ", j, " = ", d
     return ID, x, y, z, M, r
 
-def force(filename):
+def force(filename): # ID es momentaneo
     ID, x, y, z, M, r = distances(filename)
-    idp = []
-    idq = []
+    id_Mp = [] # Masa de la particula p
+    id_Mq = [] # Masa de la particula q
+    id_Xp = [] # Masa de la particula p
+    id_Xq = [] # Masa de la particula q
     N = len(x)
     R = []
     F = []
@@ -48,31 +50,34 @@ def force(filename):
                         Mt = M[p] + M[q]
                         r_cm = np.sqrt( (M[p] / (Mt) * r[j+p*N]**2 )+ (M[q] / (Mt) * r[j + q*N]**2) - (M[p]*M[q] / Mt**2 * r[q+p*N]**2) )
                         R.append(r_cm)
-                        idp.append(M[p])# Ac poner seleccion p
-                        idq.append(M[q])
+                        id_Mp.append(M[p]) # Guardo las masas de las particulas
+                        id_Mq.append(M[q])
+                        id_Xp.append(x[p]) # Guardo la posicion en x de las particulas
+                        id_Xq.append(x[q])
+                        # Mass of possible New particle
                         if Mt > M[j]:
                             F.append(1/(r_cm**2/Mt))
                             MT.append(Mt)
                         else:
                             F.append(1/(r_cm**2/M[j]))
                             MT.append(M[j])
-    index = np.where(F == min(F))
+    index = np.where(F == min(F)) #Seleccion del minimo de la fuerza
     index =  index[0][1]
-    print idp[index], idq[index], MT[index]
+    #print idp[index], idq[index], MT[index] # Que pares de particulas minimizan la fuerza
 
-    return idp[index], idq[index], MT[index], x, y, z, M
+    return id_Mp[index], id_Mq[index], id_Xp[index], id_Xq[index], MT[index], x, y, z, M
     #return x[index], y[index], z[index], MT[index], ID, x, y, z, M
 
 
 def new_particle(filename):
-    id_p, id_q, new_M, x, y, z, M = force(filename)
+    id_mp, id_mq, id_xp, id_xq ,new_M, x, y, z, M = force(filename)
     data = np.loadtxt(filename)
     #index = np.where
-    indexp = np.where(M == id_p)
-    indexq = np.where(M == id_q)
-    print "1p to merg", id_p
-    print "2p to merge", id_q
-    print "New mass of new particle", new_M
+    indexp = np.where((M == id_mp) & (x == id_xp)) # esto lo hago para asegurar que solo seleccione una particula. Improbable misma particula con M y x iguales.
+    indexq = np.where((M == id_mq) & (x == id_xq))
+    print "Mass of p1 to merge", id_mp
+    print "Mass of p2 to merge", id_mq
+    print "Mass of new particle", new_M
     xp = x[indexp]
     yp = y[indexp]
     zp = z[indexp]
@@ -84,17 +89,22 @@ def new_particle(filename):
     Mp = M[indexp]
     Mq = M[indexq]
     Mpq = Mp + Mq
+    print "index", indexp, indexq
+    print "Mpq = ", len(Mpq)
+    print "Mp = ", len(Mp)
+    print "Mq = ", len(Mq)
     #print Mp, xp, Mq, xq, Mpq
     xt = 1 / Mpq * (Mp*xp + Mq*xq)
     yt = 1 / Mpq * (Mp*yp + Mq*yq)
     zt = 1 / Mpq * (Mp*zp + Mq*zq)
     #print N+1, xt, yt, zt, new_M
     print "New x", xt, "New y", yt, "New z", zt
+    print "----------------------------------------"
     #X = np.array([N, xt, yt, zt, new_M])
     data = np.delete(data, indexp, 0)
     data = np.delete(data, indexq, 0)
 
-    print new_M, xt
+    #print new_M, xt
     f = open("data.dat", "w")
     for i in range(len(data)):
       f.write(("%f \t %f \t %f \t %f \t %f \n")%(data[i,0], data[i,1], data[i,2], data[i,3], data[i,4]))
