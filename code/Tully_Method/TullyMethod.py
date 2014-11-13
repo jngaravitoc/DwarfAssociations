@@ -111,11 +111,18 @@ def new_particle(filename):
     f.write(("%f \t %f \t %f \t %f \t %f \n")%(N+1, xt, yt, zt, new_M))
     f.close()
 
-    return len(data)
+    Volume =  (max(data[:,0]) - min(data[:,0])) * (max(data[:,1]) -min(data[:,1]) ) * (max(data[:,2]) - min(data[:,2]))
+    total_mass = sum(data [:,4])
+    density = total_mass / Volume
+    #print Volume, "density", density
+    return len(data), density
+
+
+
 LD = 100
 merging = float(sys.argv[1])
 while LD>merging:
-  LD = new_particle(filename)
-  print LD
+  LD, density = new_particle(filename)
+  print "Numero de halos = ", LD, "Densidad del grupo",  density
 
 # hashmap
