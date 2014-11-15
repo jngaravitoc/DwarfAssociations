@@ -3,14 +3,14 @@ from array import array
 import sys
 
 # TO DO:
-# 1. Fix problem of the id, possile solution choose by Position
-# 3. check if NEW_mas is correct
+# 0. Optimize
+# 1. check if NEW_mas is correct
 
 filename = "data.dat"
 #filename2  = sys.argv[1]
-N = 99 # Numero de lineas inicial
+#Numero de lineas inicial
 
-def reading(filename):
+def tully(filename, MW_density):
   data = np.loadtxt(filename)
   x = data[:,0]
   y = data[:,1]
@@ -20,21 +20,16 @@ def reading(filename):
   vz = data[:,5]
   M = data[:,6]
 
+  density = 0
 
-  return x, y, z, vx, vy, vz, M
+  while density < MW_density:
 
-
-def distances(filename):
-    x, y, z, vx, vy, vz, M = reading(filename)
     r = []
     for i in range(len(x)):
         for j in range(len(y)):
-             r.append(np.sqrt((x[i]-x[j])**2 + (y[i]-y[j])**2)+(z[i]-z[j])**2)
-            #print "distancia de: ", i, "a: ", j, " = ", d
-    return x, y, z, vx, vy, vz, M, r
+            r.append(np.sqrt((x[i]-x[j])**2 + (y[i]-y[j])**2)+(z[i]-z[j])**2)
 
-def force(filename): # ID es momentaneo
-    x, y, z, vx, vy, vz, M, r = distances(filename)
+          #print "distancia de: ", i, "a: ", j, " = ", d
     id_Mp = [] # Masa de la particula p
     id_Mq = [] # Masa de la particula q
     id_Xp = [] # Masa de la particula p
@@ -43,9 +38,9 @@ def force(filename): # ID es momentaneo
     R = []
     F = []
     MT = []
-    #print M, r
+  #print M, r
     for p in range(N):
-       for q in range(N):
+      for q in range(N):
             if p!=q:
                 for j in range(N):
                     if ((j!=p) & (j!=q)):
@@ -66,15 +61,14 @@ def force(filename): # ID es momentaneo
     index = np.where(F == min(F)) #Seleccion del minimo de la fuerza
     index =  index[0][1]
     #print idp[index], idq[index], MT[index] # Que pares de particulas minimizan la fuerza
+    id_mp = id_Mp[index]
+    id_mq = id_Mq[index],
+    id_xp = id_Xp[index]
+    id_xq = id_Xq[index]
+    new_M = MT[index]
 
-    return id_Mp[index], id_Mq[index], id_Xp[index], id_Xq[index], MT[index], x, y, z, vx, vy, vz, M
-    #return x[index], y[index], z[index], MT[index], ID, x, y, z, M
+    #data = np.loadtxt(filename)
 
-
-def new_particle(filename):
-    id_mp, id_mq, id_xp, id_xq ,new_M, x, y, z, vx, vy, vz, M = force(filename)
-    data = np.loadtxt(filename)
-    #index = np.where
     indexp = np.where((M == id_mp) & (x == id_xp)) # esto lo hago para asegurar que solo seleccione una particula. Improbable misma particula con M y x iguales.
     indexq = np.where((M == id_mq) & (x == id_xq))
     print "Mass of p1 to merge", id_mp
@@ -124,24 +118,28 @@ def new_particle(filename):
     data = np.delete(data, indexq, 0)
 
     #print new_M, xt
+    """
     f = open("data.dat", "w")
     for i in range(len(data)):
       f.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n")%(data[i,0], data[i,1], data[i,2], data[i,3], data[i,4], data[i,5], data[i, 6]))
-    f.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n")%(xt, yt, zt, vxt, vyt, vzt, new_M))
-    f.close()
+      f.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n")%(xt, yt, zt, vxt, vyt, vzt, new_M))
+      f.close()
+      """
 
     Volume =  (max(data[:,0]) - min(data[:,0])) * (max(data[:,1]) -min(data[:,1]) ) * (max(data[:,2]) - min(data[:,2]))
     total_mass = sum(data [:,4])
     density = total_mass / Volume
     #print Volume, "density", density
-    return len(data), density
+    print "Numero de halos = ", len(x), "Densidad del grupo",  density
 
+  return len(data), density
 
+MW_density = float(sys.argv[1])
 
-density = 0
-MW-density = float(sys.argv[1])
-while density < MW-density:
-  LD, density = new_particle(filename)
-  print "Numero de halos = ", LD, "Densidad del grupo",  density
+tully("data.dat", MW_density)
+
+#density = 0
+#while density < MW_density:
+#  LD, density = tully(filename)
 
 # hashmap
