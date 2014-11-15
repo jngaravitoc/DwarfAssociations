@@ -91,9 +91,9 @@ def new_particle(filename):
     vx_p = vx[indexp]
     vy_p = vy[indexp]
     vz_p = vz[indexp]
-    vx_p = vx[indexq]
-    vy_p = vy[indexq]
-    vz_p = vz[indexq]
+    vx_q = vx[indexq]
+    vy_q = vy[indexq]
+    vz_q = vz[indexq]
 
     IDp = M[indexp]
     IDq = M[indexq]
@@ -138,9 +138,9 @@ def new_particle(filename):
 
 
 
-LD = 14217
-merging = float(sys.argv[1])
-while LD>merging:
+density = 0
+MW-density = float(sys.argv[1])
+while density < MW-density:
   LD, density = new_particle(filename)
   print "Numero de halos = ", LD, "Densidad del grupo",  density
 
