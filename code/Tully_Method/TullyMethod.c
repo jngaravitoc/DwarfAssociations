@@ -7,8 +7,6 @@ TO DO:
 */
 
 
-
-
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -29,12 +27,12 @@ float *load_data(char *filename, int n_col, float * x, float * y, float * z, flo
 	float Vz;
 	float M;
 	float RVir;
-	int i;	
+	int i;
 
 
 
-	in = fopen(filename, "r");	
-	if(!in){	
+	in = fopen(filename, "r");
+	if(!in){
 	printf("Problem opening file %s\n",filename);
 	exit(1);
 
@@ -48,9 +46,9 @@ float *load_data(char *filename, int n_col, float * x, float * y, float * z, flo
 	  vz[i] = Vz;
 	  m[i] = M;
 	  Rvir[i] = RVir;
-	}	
+	}
 	fclose(in);
-	return x, y, z;
+	return x, y, z, vx, vy, vz, M;
 }
 
 int main(){
@@ -58,14 +56,14 @@ int main(){
  float *y;
  float *z;
  float *vx;
- float *vy; 
+ float *vy;
  float *vz;
  float *m;
  float *Rvir;
  int i=11;
  int n_points = 100;
  float *D;
- float *cm; 
+ float *cm;
 
  x = malloc(n_points*sizeof(double));
  y = malloc(n_points*sizeof(double));
@@ -78,8 +76,8 @@ int main(){
  D = malloc(n_points*sizeof(double));
  cm = malloc(n_points*(n_points-1)*sizeof(double));
 
- x, y, z = load_data("/home/nicolas/Dropbox/github/DwarfAssociations/data/B64_WM5_10909_LG_7Mpc_2048/HR-data.txt", 100, x, y, z, vx, vy, vz, m, Rvir);
- 
+ x, y, z, vx, vy, vz = load_data("/home/nicolas/Dropbox/github/DwarfAssociations/data/B64_WM5_10909_LG_7Mpc_2048/HR-data.txt", 100, x, y, z, vx, vy, vz, m, Rvir);
+
 
 
  distances(x, y, z, D);
@@ -93,17 +91,18 @@ for(i=0;i<n_points;i++){
 
 float  * distances(float *x, float *y, float *z, float *D){
 
-  int i; 
+  int i;
    for(i=0;i<99;i++){
-   D[i] = pow(pow(x[i],2) + pow(y[i],2) + pow(z[i],2), 0.5);
-
+     for(j = 0; j<99;j++){
+   D[i] = pow(pow(x[i]-x[j],2) + pow(y[i]-y[j],2) + pow(z[i]-z[j],2), 0.5);
+      }
     }
   return D;
 }
 
 
 float *  center_mass(float *m, float *D, float *cm, int n_points){
-  
+
   int i;
   int j;
   for(i=0;i<n_points;i++){
@@ -113,6 +112,6 @@ float *  center_mass(float *m, float *D, float *cm, int n_points){
       }
   }
   }
- 
+
  return cm;
 }

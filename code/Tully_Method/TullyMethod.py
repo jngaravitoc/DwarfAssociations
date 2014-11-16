@@ -5,6 +5,7 @@ import sys
 # TO DO:
 # 0. Optimize
 # 1. check if NEW_mas is correct
+# 2. Append new halo positions to data.
 
 filename = "data.dat"
 #filename2  = sys.argv[1]
@@ -12,18 +13,18 @@ filename = "data.dat"
 
 def tully(filename, MW_density):
   data = np.loadtxt(filename)
-  x = data[:,0]
-  y = data[:,1]
-  z = data[:,2]
-  vx = data[:,3]
-  vy = data[:,4]
-  vz = data[:,5]
-  M = data[:,6]
+
 
   density = 0
 
   while density < MW_density:
-
+    x = data[:,0]
+    y = data[:,1]
+    z = data[:,2]
+    vx = data[:,3]
+    vy = data[:,4]
+    vz = data[:,5]
+    M = data[:,6]
     r = []
     for i in range(len(x)):
         for j in range(len(y)):
@@ -108,6 +109,8 @@ def tully(filename, MW_density):
     vxt = 1/ Mpq * (Mp*vx_p + Mq*vx_q)
     vyt = 1/ Mpq * (Mp*vy_p + Mq*vy_q)
     vzt = 1/ Mpq * (Mp*vz_p + Mq*vz_q)
+
+    data.append([xt, yt, zt, vxt, vyt, vzt, new_M])
 
 
     #print N+1, xt, yt, zt, new_M
