@@ -94,21 +94,29 @@ float  * distances(float *x, float *y, float *z, float *D){
   int i;
    for(i=0;i<99;i++){
      for(j = 0; j<99;j++){
-   D[i] = pow(pow(x[i]-x[j],2) + pow(y[i]-y[j],2) + pow(z[i]-z[j],2), 0.5);
+       D[i] = pow(pow(x[i]-x[j],2) + pow(y[i]-y[j],2) + pow(z[i]-z[j],2), 0.5);
       }
     }
   return D;
 }
 
 
-float *  center_mass(float *m, float *D, float *cm, int n_points){
+float *  center_mass(float *m, float *D, float *x, float *y, float *z, int n_points){
 
-  int i;
+  int p;
+  int q;
   int j;
-  for(i=0;i<n_points;i++){
-    for(j=0;j<n_points;j++){
-      if(i!=j){
-	cm[i]=(m[i]*pow(D[i],2) /(m[j]+m[i])) + (m[j]*pow(D[j],2)/(m[i] + m[j])) - (m[i]*m[j]*pow((D[i]-D[j]),2)/(pow((m[i]+m[j]),2)));
+  for(p=0;p<n_points;p++){
+    for(q=0;q<n_points;q++){
+      if(p!=q){
+        for(j=0;j<n_points;j++){
+            if(j!=q & j!=p){
+              mt = M[q] + M[p]
+              cm[i]=pow(m[p]*pow(D[j+p*n_points],2) /mt + m[q]*pow(D[j+q*n_points],2) /mt - m[q]*m[p]*pow(D[q+p*n_points,2])/pow(mt,2),0.5);
+              }
+            }
+        }
+        }
       }
   }
   }
