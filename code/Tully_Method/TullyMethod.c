@@ -61,7 +61,7 @@ int main(){
  float *m;
  float *Rvir;
  int i=11;
- int n_points = 100;
+ int n_points = 1000;
  float *D;
  double *cm;
  float *mt;
@@ -80,15 +80,17 @@ int main(){
  cm = malloc(n_points*n_points*(n_points-1)*sizeof(double));
  F = malloc(n_points*n_points*(n_points-1)*sizeof(double));
 
- load_data("data.dat", 100, x, y, z, vx, vy, vz, m);
+ load_data("test.txt", n_points, x, y, z, vx, vy, vz, m);
 
 
 
  distances(x, y, z, D, n_points);
  center_mass(m, D, x, y, z,  n_points, mt, cm, F);
-//for(i=0;i<n_points;i++){
+ //printf("%f \n", D[0]);
+// for(i=0;i<n_points*n_points;i++){
+// printf("%f \t %f \n", D[i], cm[i]);
  //printf("%f  \t %f \t %f \n", D[i], cm[i], mt[i]);
-//}
+// }
  return 0;
 
 }
@@ -120,14 +122,16 @@ void * center_mass(float *m, float *D, float *x, float *y, float *z, int n_point
             if(j!=q & j!=p){
               mt[j] = m[q] + m[p];
               cm[j]=m[p]*pow(D[j+p*n_points],2) / mt[j] + m[q]*pow(D[j+q*n_points],2) / mt[j] - m[q]*m[p]*pow(D[q+p*n_points],2) / pow(mt[j],2);
-              printf("%f \n", cm[j]);
+              //printf("%f \t %d \t %d\n", cm[j], p, q);
               if(mt[j] > m[j]){
               F[j] = mt[j]/pow(cm[j],2);
                 }
               else{
               F[j] = m[j]/pow(cm[j],2);
-
+	      
                 }
+              printf("%f \t %f \t %d \t %d \t %f \t %f \n", cm[j],F[j],  p, q, mt[j], m[j]);
+
               }
 
             }
