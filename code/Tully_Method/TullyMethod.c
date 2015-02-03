@@ -1,8 +1,7 @@
 /*
 TO DO:
-1- Fixed difference in codes in the cm distance
+1- Check Cm and F results from center_mass
 2- Write merging function
-3- Review Tully Method.
 
 */
 
@@ -12,15 +11,19 @@ TO DO:
 #include <stdlib.h>
 
 
+// ##########################         Defining functions            #######################
+
 void *center_mass(float *m, float *D, float *x, float *y, float *z, int n_points, float * mt, double * cm, float *F);
 void *distances(float * x, float * y, float * z, float *D, int n_points);
 void *load_data(char *filename, int n_col, float * x, float * y, float * z, float * vx, float * vy, float * vz, float * m);
 
+// ##########################         Function that calls the data  #######################
+
+
 void *load_data(char *filename, int n_col, float * x, float * y, float * z, float * vx, float * vy, float * vz, float * m ){
-//	float *data;
-  FILE *in;
+        FILE *in;
 	float X;
-  float Y;
+  	float Y;
 	float Z;
 	float Vx;
 	float Vy;
@@ -35,8 +38,9 @@ void *load_data(char *filename, int n_col, float * x, float * y, float * z, floa
 	if(!in){
 	printf("Problem opening file %s\n",filename);
 	exit(1);
+		}
 
-}	for(i=0;i<=n_col;i++){
+	for(i=0;i<=n_col;i++){
 	  fscanf(in, "%f %f %f %f %f %f %f \n",&X, &Y, &Z, &Vx, &Vy, &Vz, &M);
 	  x[i]=X;
 	  y[i]=Y;
@@ -49,8 +53,9 @@ void *load_data(char *filename, int n_col, float * x, float * y, float * z, floa
 	}
 	fclose(in);
 	//return x, y, z, vx, vy, vz, M;
-}
+	}
 
+// ######################## Main function ################################
 int main(){
  float *x;
  float *y;
@@ -59,13 +64,14 @@ int main(){
  float *vy;
  float *vz;
  float *m;
- float *Rvir;
+ 
  int i=11;
- int n_points = 1000;
+ int n_points = 10;
  float *D;
  double *cm;
  float *mt;
  float *F;
+ 
 
  x = malloc(n_points*sizeof(double));
  y = malloc(n_points*sizeof(double));
@@ -75,7 +81,7 @@ int main(){
  vz = malloc(n_points*sizeof(double));
  m = malloc(n_points*sizeof(double));
  mt = malloc(n_points*sizeof(double));
- Rvir = malloc(n_points*sizeof(double));
+ //Rvir = malloc(n_points*sizeof(double));
  D = malloc(n_points*n_points*sizeof(double));
  cm = malloc(n_points*n_points*(n_points-1)*sizeof(double));
  F = malloc(n_points*n_points*(n_points-1)*sizeof(double));
@@ -99,9 +105,11 @@ void  * distances(float *x, float *y, float *z, float *D, int n_points){
 
   int i;
   int j;
-   for(i=0;i<n_points;i++){
+
+  for(i=0;i<n_points;i++){
      for(j = 0; j<n_points;j++){
        D[i] = pow(pow(x[i]-x[j],2) + pow(y[i]-y[j],2) + pow(z[i]-z[j],2), 0.5);
+	//printf("%f \n", D[i]);
       }
     }
 
@@ -113,16 +121,20 @@ void * center_mass(float *m, float *D, float *x, float *y, float *z, int n_point
   int p;
   int q;
   int j;
-  //float M;
   int i;
+  int n;
+
   for(p=0;p<n_points;p++){
     for(q=0;q<n_points;q++){
       if(p!=q){
+	n=0;
         for(j=0;j<n_points;j++){
             if(j!=q & j!=p){
+	      n++;
               mt[j] = m[q] + m[p];
-              cm[j]=m[p]*pow(D[j+p*n_points],2) / mt[j] + m[q]*pow(D[j+q*n_points],2) / mt[j] - m[q]*m[p]*pow(D[q+p*n_points],2) / pow(mt[j],2);
+              cm[j] = m[p]*pow(D[j+p*n_points],2) / mt[j] + m[q]*pow(D[j+q*n_points],2) / mt[j] - m[q]*m[p]*pow(D[q+p*n_points],2) / pow(mt[j],2);
               //printf("%f \t %d \t %d\n", cm[j], p, q);
+
               if(mt[j] > m[j]){
               F[j] = mt[j]/pow(cm[j],2);
                 }
@@ -130,9 +142,15 @@ void * center_mass(float *m, float *D, float *x, float *y, float *z, int n_point
               F[j] = m[j]/pow(cm[j],2);
 	      
                 }
-              printf("%f \t %f \t %d \t %d \t %f \t %f \n", cm[j],F[j],  p, q, mt[j], m[j]);
 
-              }
+	      if(n>0){
+              // this is to print just the minimum values of F and to ignore distances of the same particle
+	      if(F[j]<F[j-1] & (D[j+p*n_points] !=0) & (D[j+q*n_points] != 0)){
+              printf("%f \t %d \t %d \t %d \t %f \t %f \t %f \t %f \t %f \t %f \n", F[j], p, q, j, m[p], m[q], mt[j], pow(D[j+p*n_points], 2), pow(D[j+q*n_points], 2), pow(D[q+p*n_points], 2) );
+
+			}			
+	              }}
+
 
             }
           }
