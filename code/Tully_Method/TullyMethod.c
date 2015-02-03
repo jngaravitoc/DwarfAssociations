@@ -1,6 +1,6 @@
 /*
 TO DO:
-1- Check Cm and F results from center_mass
+1- Check Cm and F results from center_mass Fucking problem with distances
 2- Write merging function
 
 */
@@ -142,14 +142,15 @@ void * center_mass(float *m, float *D, float *x, float *y, float *z, int n_point
               F[j] = m[j]/pow(cm[j],2);
 	      
                 }
-
-	      if(n>0){
+              printf("%f \t %d \t %d \t %d \t %f \t %f \t %f \t %f \t %f \t %f \n", F[j], p, q, j, m[p], m[q], mt[j], pow(D[j+p*n_points], 2), pow(D[j+q*n_points], 2), pow(D[q+p*n_points], 2));
+	      /*if(n>0){
               // this is to print just the minimum values of F and to ignore distances of the same particle
 	      if(F[j]<F[j-1] & (D[j+p*n_points] !=0) & (D[j+q*n_points] != 0)){
               printf("%f \t %d \t %d \t %d \t %f \t %f \t %f \t %f \t %f \t %f \n", F[j], p, q, j, m[p], m[q], mt[j], pow(D[j+p*n_points], 2), pow(D[j+q*n_points], 2), pow(D[q+p*n_points], 2) );
 
 			}			
-	              }}
+	              }*/
+}
 
 
             }
