@@ -90,7 +90,7 @@ int main(){
 
  distances(x, y, z, D, n_points);
  for(i=0;i<100;i++){
- printf("en el main%f \n", D[1]);
+ printf("en el main%f \n", D[i]);
 }
  //center_mass(m, D, x, y, z,  n_points, mt, cm, F);
  //printf("%f \n", D[0]);
@@ -106,12 +106,12 @@ void  * distances(float *x, float *y, float *z, float *D, int n_points){
 
   int i;
   int j;
-  int k = n_points*n_points;
+  int k = 0;
 
   for(i=0;i<n_points;i++){
      for(j = 0; j<n_points;j++){
        D[k] = pow(pow(x[i]-x[j],2) + pow(y[i]-y[j],2) + pow(z[i]-z[j],2), 0.5);
-       printf("%f \n", D[k]);
+       k++;
       }
     }
 
