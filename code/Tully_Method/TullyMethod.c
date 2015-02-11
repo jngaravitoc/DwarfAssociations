@@ -118,18 +118,24 @@ void * center_mass(float *m, float *D, float *x, float *y, float *z, int n_point
   int i;
   int n;
   int k=0;
- // for(i=0;i<100;i++){
- // printf("%f \n", D[i]);
+  int a;
+  int b;
+  int c;
+  //for(i=0;i<100;i++){
+  //printf("%f \t %f \n", D[i], m[i]);
 //}
   for(p=0;p<n_points;p++){
     for(q=0;q<n_points;q++){
       if(p!=q){
-	n=0;
+	
         for(j=0;j<n_points;j++){
             if(j!=q & j!=p){
-	      n++;
+	      
+              a = j+(p*n_points);
+              b = j+(q*n_points);
+              c = p+(q*n_points);
               mt[k] = m[q] + m[p];
-              cm[k] = m[p]*pow(D[j+p*n_points],2) / mt[k] + m[q]*pow(D[j+q*n_points],2) / mt[k] - m[q]*m[p]*pow(D[q+p*n_points],2) / pow(mt[k],2);
+              cm[k] = m[p]*pow(D[a],2) / mt[k] + m[q]*pow(D[b],2) / mt[k] - m[q]*m[p]*pow(D[c],2) / pow(mt[k],2);
               //printf("%f \t %d \t %d\n", cm[k], p, q);
               
               if(mt[k] > m[k]){
@@ -139,16 +145,18 @@ void * center_mass(float *m, float *D, float *x, float *y, float *z, int n_point
               F[k] = m[k]/pow(cm[k],2);
 	      
                 }
-	     printf("%3f \t %d \t %d \t %d \t %3f  \n", F[k], p, q, k, cm[k]);
+              printf("%f \t %f \t %d \t %d \n", D[a], D[b],a,b);
+	     //printf("%3f \t %d \t %d \t %d \t %3f \t %d \t %d \t %f \t %f \t %f \t %f \t %f \n", F[k], p, q, k, cm[k], j+p*n_points, j+q*n_points, D[j+p*n_points], D[j+q*n_points], m[q], m[p], mt[k]);
 	     k++;
- /*if(n>0){
-              // this is to print just the minimum values of F and to ignore distances of the same particle
-	      if(F[j]<F[j-1] & (D[j+p*n_points] !=0) & (D[j+q*n_points] != 0)){
-              printf("%f \t %d \t %d \t %d \t %f \t %f \t %f \t %f \t %f \t %f \n", F[j], p, q, j, m[p], m[q], mt[j], pow(D[j+p*n_points], 2), pow(D[j+q*n_points], 2), pow(D[q+p*n_points], 2) );
+	      if(k>0){
+             // this is to print just the minimum values of F and to ignore distances of the same particle
+	      if(F[k]<F[k-1]){
+              //printf("%f \t %d \t %d \t %f \t %f \t %f \t  \n", F[k], p, q, m[p], m[q], mt[k] );
 
-			}			
-	              }*/
-}
+			}
+		}			
+	              
+		}	
 
 
             }
