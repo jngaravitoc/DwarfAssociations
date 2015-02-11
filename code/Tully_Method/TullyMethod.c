@@ -19,7 +19,7 @@ TO DO:
 void center_mass(double *m, double *D, double *x, double *y, double *z, int n_points, double * mt, double * cm, double *F);
 void distances(double * x, double * y, double * z, double *D, int n_points);
 void load_data(char *filename, int n_points, double * x, double * y, double * z, double * vx, double * vy, double * vz, double * m );
-void test(double *D, int n_points);
+
 
 // ##########################         Function that calls the data  #######################
 
@@ -35,7 +35,7 @@ int main(){
  double *m;
  
 
- int n_points = 10;
+ int n_points = 500;
  double *D = NULL;
  double *cm = NULL;
  double *mt = NULL;
@@ -72,7 +72,6 @@ int main(){
 
  distances(x, y, z, D, n_points);
 
- test(D, n_points);
  center_mass(m, D, x, y, z,  n_points, mt, cm, F);
  
 
@@ -127,22 +126,7 @@ void  distances(double *x, double *y, double *z, double *D, int n_points){
     }
 }
 
-void test(double *D, int n_points){
-  int p, a, b;
-  int q;
-  int j;
-  int k=0;
-  for(p=0;p<n_points;p++){
-    for(q=0;q<n_points;q++){
-      if(p!=q){	
-        for(j=0;j<n_points;j++){
-	  if((j!=q) && (j!=p)){
-              a = j + (p*n_points);
-              b = j + (q*n_points);
-	      fprintf(stdout, "%lf %lf %d \t %d %d\n", D[a], D[b], a, b, n_points);	      
-	    
-	  }}}}}
-}
+
 
 void center_mass(double *m, double *D, double *x, double *y, double *z, int n_points, double * mt, double * cm, double *F){
 
@@ -153,7 +137,7 @@ void center_mass(double *m, double *D, double *x, double *y, double *z, int n_po
   int a=0;
   int b=0;
   int c=0;
-  
+  double min;
 
   for(p=0;p<n_points;p++){
     for(q=0;q<n_points;q++){
@@ -167,27 +151,35 @@ void center_mass(double *m, double *D, double *x, double *y, double *z, int n_po
               b = j + (q*n_points);
               c = p + (q*n_points);
 
-	      fprintf(stdout, "%lf %lf %d \t %d %d\n", D[a], D[b], a, b, k);	      
+	      //fprintf(stdout, "%lf %lf %d \t %d %d\n", D[a], D[b], a, b, k);	      
 	      mt[k] = m[p] + m[q];
+	      cm[k] = (m[p]*pow(D[a],2) / mt[k]) + (m[q]*pow(D[b],2) / mt[k]) - (m[q]*m[p]*pow(D[c],2) / pow(mt[k],2));
 
-	      //	      cm[k] = (m[p]*pow(D[a],2) / mt[k]) + (m[q]*pow(D[b],2) / mt[k]) - (m[q]*m[p]*pow(D[c],2) / pow(mt[k],2));
-              //printf("%f \t %d \t %d\n", cm[k], p, q);
-              /*
-              if(mt[k] > m[k]){
+	       //printf("%lf \n", mt[k]);
+              
+              if(mt[k] > m[j]){
 		F[k] = mt[k]/pow(cm[k],2);
 	      }else{
-		F[k] = m[k]/pow(cm[k],2);		
+		F[k] = m[j]/pow(cm[k],2);		
 	      }
-	      */
-
-	      //printf("%3f \t %d \t %d \t %d \t %3f \t %d \t %d \t %f \t %f \t %f \t %f \t %f \n", F[k], p, q, k, cm[k], j+p*n_points, j+q*n_points, D[j+p*n_points], D[j+q*n_points], m[q], m[p], mt[k]);
-	      k++;
-	      //	      if(k>0){
-		// this is to print just the minimum values of F and to ignore distances of the same particle
-	      //		if(F[k]<F[k-1]){
-		  //printf("%f \t %d \t %d \t %f \t %f \t %f \t  \n", F[k], p, q, m[p], m[q], mt[k] );		  
-	      //		}
-	      //	      }				      
+	     
+	     //printf("%lf \t %d \t %d \t %lf \t %lf \t %lf \n ", F[k], p, q, m[p], m[q], mt[k]);
+	      
+	      if(k==0){
+              // this is to print just the minimum values of F and to ignore distances of the same particle
+	      min = F[0];}
+	     else{  
+	      if(F[k]<min){
+	       min=F[k];
+		
+              printf("%lf \t %d \t %d \t %lf \t %lf \t %lf \n", F[k], p, q, m[p], m[q], mt[k]);		  
+		}
+	      
+		}
+	     
+	     //printf("%lf \n", min);	     
+             
+	     k++;				      
 	  }		  	  
 	}
       }
