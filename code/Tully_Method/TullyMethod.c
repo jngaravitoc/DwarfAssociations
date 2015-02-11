@@ -16,9 +16,9 @@ TO DO:
 
 // ##########################         Defining functions            #######################
 
-void center_mass(double *m, double *D, double *x, double *y, double *z, int n_points, double * mt, double * cm, double *F);
-void distances(double * x, double * y, double * z, double *D, int n_points);
-void load_data(char *filename, int n_points, double * x, double * y, double * z, double * vx, double * vy, double * vz, double * m );
+void center_mass(double *m, double *D, double *x, double *y, double *z, int n_points, double * mt, double * cm, double *F, double *Q, double *P, double *M);
+void distances(double * x, double * y, double * z, double *D, int n_points); 
+void load_data(char *filename, int n_points, double * x, double * y, double * z, double * m );
 
 
 // ##########################         Function that calls the data  #######################
@@ -29,11 +29,16 @@ int main(){
  double *x;
  double *y;
  double *z;
- double *vx;
- double *vy;
- double *vz;
+ //double *vx;
+ //double *vy;
+ //double *vz;
  double *m;
- 
+ double *Q;
+ double *P;
+ double *M;
+ double xt;
+ double yt;
+ double zt;
 
  int n_points = 500;
  double *D = NULL;
@@ -41,13 +46,18 @@ int main(){
  double *mt = NULL;
  double *F = NULL;
  
-
+ int i;
+ int q;
+ int p; 
+ Q = malloc(sizeof(double));
+ P = malloc(sizeof(double));
+ M = malloc(sizeof(double));
  x = malloc(n_points*sizeof(double));
  y = malloc(n_points*sizeof(double));
  z = malloc(n_points*sizeof(double));
- vx = malloc(n_points*sizeof(double));
- vy = malloc(n_points*sizeof(double));
- vz = malloc(n_points*sizeof(double));
+// vx = malloc(n_points*sizeof(double));
+// vy = malloc(n_points*sizeof(double));
+// vz = malloc(n_points*sizeof(double));
  m = malloc(n_points*sizeof(double));
  mt = malloc(n_points*n_points*n_points*sizeof(double));
 
@@ -67,28 +77,39 @@ int main(){
    exit(1); 
  }
 
- load_data("test.txt", n_points, x, y, z, vx, vy, vz, m);
+ load_data("test.txt", n_points, x, y, z, m);
 
 
  distances(x, y, z, D, n_points);
 
- center_mass(m, D, x, y, z,  n_points, mt, cm, F);
+ center_mass(m, D, x, y, z,  n_points, mt, cm, F, Q, P, M);
  
+ printf("out %lf \t %lf \n", P[0], Q[0]);
+ 
+ p = P[0];
+ q = Q[0];
+
+ xt = (1 / (m[p] + m[q])) * (m[p]*x[p] + m[q]*x[q]);
+ yt = (1 / (m[p] + m[q])) * (m[p]*y[p] + m[q]*y[q]);
+ zt = (1 / (m[p] + m[q])) * (m[p]*z[p] + m[q]*z[q]);
 
 
+ for(i=0;i<500;i++){
+ if((i!=P[0]) && (i!=Q[0])){
+ printf("%lf \t %lf \t %lf \t %lf\n",x[i], y[i], z[i], m[i]);
+ }
+}
+ printf("%lf \t %lf \t %lf \t %lf \n", xt, yt, zt, m[q]+m[p]);
  return 0;
 }
 
 
 
-void load_data(char *filename, int n_points, double * x, double * y, double * z, double * vx, double * vy, double * vz, double * m ){
+void load_data(char *filename, int n_points, double * x, double * y, double * z,  double * m ){
         FILE *in;
 	double X;
   	double Y;
 	double Z;
-	double Vx;
-	double Vy;
-	double Vz;
 	double M;
 	int i;
 
@@ -99,13 +120,10 @@ void load_data(char *filename, int n_points, double * x, double * y, double * z,
 	}
 	
 	for(i=0;i<n_points;i++){
-	  fscanf(in, "%lf %lf %lf %lf %lf %lf %lf \n",&X, &Y, &Z, &Vx, &Vy, &Vz, &M);
+	  fscanf(in, "%lf %lf %lf %lf \n",&X, &Y, &Z, &M);
 	  x[i] = X; 
 	  y[i] = Y;
 	  z[i] = Z;
-	  vx[i] = Vx;
-	  vy[i] = Vy;
-	  vz[i] = Vz;
 	  m[i] = M;
 	}
 	fclose(in);
@@ -128,7 +146,7 @@ void  distances(double *x, double *y, double *z, double *D, int n_points){
 
 
 
-void center_mass(double *m, double *D, double *x, double *y, double *z, int n_points, double * mt, double * cm, double *F){
+void center_mass(double *m, double *D, double *x, double *y, double *z, int n_points, double * mt, double * cm, double *F, double *Q, double *P, double *M){
 
   int p;
   int q;
@@ -171,8 +189,10 @@ void center_mass(double *m, double *D, double *x, double *y, double *z, int n_po
 	     else{  
 	      if(F[k]<min){
 	       min=F[k];
-		
-              printf("%lf \t %d \t %d \t %lf \t %lf \t %lf \n", F[k], p, q, m[p], m[q], mt[k]);		  
+		Q[0] = q;
+                P[0] = p;
+             //printf("%lf \t %d \t %d \t %lf \t %lf \t %lf \n", F[k], p, q, m[p], m[q], mt[k]);
+              		  
 		}
 	      
 		}
@@ -186,3 +206,5 @@ void center_mass(double *m, double *D, double *x, double *y, double *z, int n_po
     }
   }
 }
+
+
