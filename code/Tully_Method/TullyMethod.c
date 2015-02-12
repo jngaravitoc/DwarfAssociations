@@ -88,22 +88,12 @@ int main(int argc, char **argv){
 
  center_mass(m, D, x, y, z,  n_points, mt, cm, F, Q, P, M);
  
- printf("out %lf \t %lf \n", P[0], Q[0]);
- 
  p = P[0];
  q = Q[0];
 
  xt = (1 / (m[p] + m[q])) * (m[p]*x[p] + m[q]*x[q]);
  yt = (1 / (m[p] + m[q])) * (m[p]*y[p] + m[q]*y[q]);
  zt = (1 / (m[p] + m[q])) * (m[p]*z[p] + m[q]*z[q]);
-
- for(i=0;i<n_points;i++){
- if((i!=P[0]) && (i!=Q[0])){
- printf("%lf \t %lf \t %lf \t %lf\n",x[i], y[i], z[i], m[i]);
- }
- }
-
- 
 
  in = fopen(filename,"a");
  if(!in){
