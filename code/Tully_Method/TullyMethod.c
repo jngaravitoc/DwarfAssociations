@@ -25,7 +25,8 @@ void load_data(char *filename, int n_points, double * x, double * y, double * z,
 
 
 // ######################## Main function ################################
-int main(){
+int main(int argc, char **argv){
+ FILE *in;
  double *x;
  double *y;
  double *z;
@@ -39,8 +40,11 @@ int main(){
  double xt;
  double yt;
  double zt;
-
- int n_points = 500;
+ 
+ char filename[100]="test.txt";
+  
+ int n_points = atoi(argv[1]);
+ do{
  double *D = NULL;
  double *cm = NULL;
  double *mt = NULL;
@@ -77,7 +81,7 @@ int main(){
    exit(1); 
  }
 
- load_data("test.txt", n_points, x, y, z, m);
+ load_data(filename, n_points, x, y, z, m);
 
 
  distances(x, y, z, D, n_points);
@@ -93,13 +97,28 @@ int main(){
  yt = (1 / (m[p] + m[q])) * (m[p]*y[p] + m[q]*y[q]);
  zt = (1 / (m[p] + m[q])) * (m[p]*z[p] + m[q]*z[q]);
 
-
- for(i=0;i<500;i++){
+ for(i=0;i<n_points;i++){
  if((i!=P[0]) && (i!=Q[0])){
  printf("%lf \t %lf \t %lf \t %lf\n",x[i], y[i], z[i], m[i]);
  }
-}
- printf("%lf \t %lf \t %lf \t %lf \n", xt, yt, zt, m[q]+m[p]);
+ }
+
+ 
+
+ in = fopen(filename,"a");
+ if(!in){
+ printf("problems opening the file %s\n", filename);
+ exit(1);
+ } 
+ for(i=0;i<n_points;i++){
+ if((i!=P[0]) && (i!=Q[0])){
+ fprintf(in, "%lf \t %lf \t %lf \t %lf\n",x[i], y[i], z[i], m[i]);
+ }
+ }
+ fprintf(in, "%lf \t %lf \t %lf \t %lf \n", xt, yt, zt, m[q]+m[p]); //check this mass
+ fclose(in); 
+ n_points--;
+ }while(n_points>2);
  return 0;
 }
 
