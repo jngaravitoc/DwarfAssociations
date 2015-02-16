@@ -21,30 +21,36 @@ void distances(double * x, double * y, double * z, double *D, int n_points);
 void load_data(char *filename, int n_points, double * x, double * y, double * z, double * m );
 
 
-// ##########################         Function that calls the data  #######################
-
-
 // ######################## Main function ################################
 int main(int argc, char **argv){
+ 
+int n_points = atoi(argv[1]);
+
+
+
+ 
+ do{
  FILE *in;
- double *x;
- double *y;
- double *z;
+ char filename[100];
+ 
+ double *x=NULL;
+ double *y=NULL;
+ double *z=NULL;
  //double *vx;
  //double *vy;
  //double *vz;
- double *m;
- double *Q;
- double *P;
- double *M;
+ double *m=NULL;
+ double *Q=NULL;
+ double *P=NULL;
+ double *M=NULL;
  double xt;
  double yt;
  double zt;
- 
- char filename[100]="test.txt";
-  
- int n_points = atoi(argv[1]);
- do{
+
+
+ sprintf(filename, "test%05d.txt", n_points);
+ printf("%s \n",filename);
+
  double *D = NULL;
  double *cm = NULL;
  double *mt = NULL;
@@ -65,18 +71,16 @@ int main(int argc, char **argv){
  m = malloc(n_points*sizeof(double));
  mt = malloc(n_points*n_points*n_points*sizeof(double));
 
- 
-
  if(!( D = malloc(n_points*n_points*sizeof(double)))){
    fprintf(stderr, "problem in allocation\n");
    exit(1);
  }
 
- if(!(cm = malloc(n_points*n_points*(n_points)*sizeof(double)))){
+ if(!(cm = malloc(n_points*n_points*n_points*sizeof(double)))){
    fprintf(stderr, "problem in allocation\n");
    exit(1);
  }
- if(!(F = malloc(n_points*n_points*(n_points)*sizeof(double)))){
+ if(!(F = malloc(n_points*n_points*n_points*sizeof(double)))){
    fprintf(stderr, "problem in allocation\n");
    exit(1); 
  }
@@ -94,21 +98,31 @@ int main(int argc, char **argv){
  xt = (1 / (m[p] + m[q])) * (m[p]*x[p] + m[q]*x[q]);
  yt = (1 / (m[p] + m[q])) * (m[p]*y[p] + m[q]*y[q]);
  zt = (1 / (m[p] + m[q])) * (m[p]*z[p] + m[q]*z[q]);
+ sprintf(filename, "test%05d.txt", n_points-1);
 
- in = fopen(filename,"a");
+
+ in = fopen(filename,"w");
  if(!in){
  printf("problems opening the file %s\n", filename);
  exit(1);
  } 
+
  for(i=0;i<n_points;i++){
- if((i!=P[0]) && (i!=Q[0])){
+ if((i!=P[0]) && (i!=Q[0])){ // Aca evito que escriba los halos que ya fusione
  fprintf(in, "%lf \t %lf \t %lf \t %lf\n",x[i], y[i], z[i], m[i]);
  }
  }
+
  fprintf(in, "%lf \t %lf \t %lf \t %lf \n", xt, yt, zt, m[q]+m[p]); //check this mass
- fclose(in); 
+ fclose(in);
+
+ for(i=0;i<n_points*n_points*n_points;i++){
+ printf("%lf \t %lf \t %lf \t %lf \t %lf \t %lf \t %lf \t %lf \n", mt[i], x[i], y[i], z[i], m[i], F[i], D[i], cm[i]);
+ } 
  n_points--;
  }while(n_points>2);
+
+
  return 0;
 }
 
