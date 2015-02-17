@@ -26,53 +26,40 @@ int main(int argc, char **argv){
  
 int n_points = atoi(argv[1]);
 
+int i;
+int q;
+int p;
 
+double *D = NULL;
+//double *cm = NULLn");
+double *mt = NULL;
+double *F = NULL;
+double *m=NULL;
+double *Q=NULL;
+double *P=NULL;
+double *M=NULL;
+double xt;
+double yt;
+double zt;
+double cm;
+double *x=NULL;
+double *y=NULL;
+double *z=NULL;
 
- 
- do{
- FILE *in;
- char filename[100];
- 
- double *x=NULL;
- double *y=NULL;
- double *z=NULL;
- //double *vx;
- //double *vy;
- //double *vz;
- double *m=NULL;
- double *Q=NULL;
- double *P=NULL;
- double *M=NULL;
- double xt;
- double yt;
- double zt;
- double cm;
-
- sprintf(filename, "test%05d.txt", n_points);
- printf("%s \n",filename);
-
- double *D = NULL;
- //double *cm = NULL;
- double *mt = NULL;
- double *F = NULL;
- 
- int i;
- int q;
- int p; 
- Q = malloc(sizeof(double));
- P = malloc(sizeof(double));
- M = malloc(sizeof(double));
- x = malloc(n_points*sizeof(double));
- y = malloc(n_points*sizeof(double));
- z = malloc(n_points*sizeof(double));
+Q = malloc(sizeof(double));
+P = malloc(sizeof(double));
+M = malloc(sizeof(double));
+x = malloc(n_points*sizeof(double));
+y = malloc(n_points*sizeof(double));
+z = malloc(n_points*sizeof(double));
 // vx = malloc(n_points*sizeof(double));
 // vy = malloc(n_points*sizeof(double));
 // vz = malloc(n_points*sizeof(double));
- m = malloc(n_points*sizeof(double));
- mt = malloc(n_points*n_points*n_points*sizeof(double));
+m = malloc(n_points*sizeof(double));
+mt = malloc(n_points*n_points*n_points*sizeof(double));
 
- if(!( D = malloc(n_points*n_points*sizeof(double)))){
-   fprintf(stderr, "problem in allocation\n");
+if(!( D = malloc(n_points*n_points*sizeof(double)))){
+   fprintf(stderr, "problem in allocation 1\n");
    exit(1);
  }
 
@@ -81,27 +68,43 @@ int n_points = atoi(argv[1]);
  //  exit(1);
 // }
  if(!(F = malloc(n_points*n_points*n_points*sizeof(double)))){
-   fprintf(stderr, "problem in allocation\n");
-   exit(1); 
+   fprintf(stderr, "problem in allocation 2 \n");
+   exit(1);
  }
 
+
+ do{
+ FILE *in;
+ char filename[100];
+ 
+//double *vx;
+//double *vy;
+//double *vz;
+
+ sprintf(filename, "test%05d.txt", n_points);
+ printf("%s \n",filename);
+ 
  load_data(filename, n_points, x, y, z, m);
+ printf("Done loading data \n");
 
  distances(x, y, z, D, n_points);
-
+ printf("Done computing distances \n");
+ 
  center_mass(m, D, x, y, z,  n_points, mt, cm, F, Q, P, M);
- printf("check_points");
+ printf("Donde computing center of mass \n");
+ 
  p = P[0];
  q = Q[0];
 
  xt = (1 / (m[p] + m[q])) * (m[p]*x[p] + m[q]*x[q]);
  yt = (1 / (m[p] + m[q])) * (m[p]*y[p] + m[q]*y[q]);
  zt = (1 / (m[p] + m[q])) * (m[p]*z[p] + m[q]*z[q]);
- printf("%lf \n", zt);
+
  sprintf(filename, "test%05d.txt", n_points-1);
  
  
  in = fopen(filename,"w");
+ printf("Writting new data \n");
  if(!in){
  printf("problems opening the file %s\n", filename);
  exit(1);
@@ -115,7 +118,17 @@ int n_points = atoi(argv[1]);
 
  fprintf(in, "%lf \t %lf \t %lf \t %lf \n", xt, yt, zt, m[q]+m[p]); //check this mass
  fclose(in);
-
+  for(i=0;i<n_points*n_points;i++){
+  D[i] = 0;
+}
+  for(i=0;i<n_points*n_points*n_points;i++){
+  F[i] = 0;
+}
+  for(i=0;i<n_points;i++){
+  x[i] = 0;
+  y[i] = 0;
+  z[i] = 0;
+}
   n_points--;
  }while(n_points>2);
 
