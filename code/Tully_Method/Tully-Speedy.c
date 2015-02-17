@@ -2,9 +2,6 @@
 
 This code was written by J. N. Garavito-Camargo in February of 2015.
 
-TO DO:
-1- Check Cm and F results from center_mass Fucking problem with distances
-2- Write merging function
 
 */
 
@@ -31,23 +28,26 @@ int q;
 int p;
 
 double *D = NULL;
-//double *cm = NULLn");
-//double *mt = NULL;
 double *F = NULL;
 double *m=NULL;
 double *Q=NULL;
 double *P=NULL;
 double *M=NULL;
+
 double xt;
 double yt;
 double zt;
+
 double cm;
+
 double *x=NULL;
 double *y=NULL;
 double *z=NULL;
+
 double vxt;
 double vyt;
 double vzt;
+
 double *vx=NULL;
 double *vy=NULL;
 double *vz=NULL;
@@ -65,49 +65,47 @@ vx = malloc(n_points*sizeof(double));
 vy = malloc(n_points*sizeof(double));
 vz = malloc(n_points*sizeof(double));
 m = malloc(n_points*sizeof(double));
-//mt = malloc(sizeof(double));
 
 if(!( D = malloc(n_points*n_points*sizeof(double)))){
    fprintf(stderr, "problem in allocation 1\n");
    exit(1);
  }
 
- //do{
+do{
  FILE *in;
  char filename[100];
  
-//double *vx;
+//uble *vx;
 //double *vy;
 //double *vz;
 
  sprintf(filename, "test%05d.txt", n_points);
-// printf("%s \n",filename);
+ printf("%s \n",filename);
  
  load_data(filename, n_points, x, y, z, vx, vy, vz, m);
-// printf("Done loading data \n");
+ printf("Done loading data \n");
 
  distances(x, y, z, D, n_points);
-// printf("Done computing distances \n");
- for(i=0;i<n_points;i++){
- printf("%lf \n", D[i]);
- }
- //center_mass(m, D, n_points, cm, F, Q, P, M);
- //printf("Donde computing center of mass \n");
+ printf("Done computing distances \n");
  
- //p = P[0];
- //q = Q[0];
 
- //xt = (1 / (m[p] + m[q])) * (m[p]*x[p] + m[q]*x[q]);
- //yt = (1 / (m[p] + m[q])) * (m[p]*y[p] + m[q]*y[q]);
- //zt = (1 / (m[p] + m[q])) * (m[p]*z[p] + m[q]*z[q]);
-
- //vxt = (1 / (m[p] + m[q])) * (m[p]*vx[p] + m[q]*vx[q]);;
- //vyt = (1 / (m[p] + m[q])) * (m[p]*vy[p] + m[q]*vy[q]);;
- //vzt = (1 / (m[p] + m[q])) * (m[p]*vz[p] + m[q]*vz[q]);
-
- //sprintf(filename, "test%05d.txt", n_points-1);
+ center_mass(m, D, n_points, cm, F, Q, P, M);
+ printf("Donde computing center of mass \n");
  
- /*
+ p = P[0];
+ q = Q[0];
+
+ xt = (1 / (m[p] + m[q])) * (m[p]*x[p] + m[q]*x[q]);
+ yt = (1 / (m[p] + m[q])) * (m[p]*y[p] + m[q]*y[q]);
+ zt = (1 / (m[p] + m[q])) * (m[p]*z[p] + m[q]*z[q]);
+ 
+ vxt = (1 / (m[p] + m[q])) * (m[p]*vx[p] + m[q]*vx[q]);;
+ vyt = (1 / (m[p] + m[q])) * (m[p]*vy[p] + m[q]*vy[q]);;
+ vzt = (1 / (m[p] + m[q])) * (m[p]*vz[p] + m[q]*vz[q]);
+
+ sprintf(filename, "test%05d.txt", n_points-1);
+ 
+ 
  in = fopen(filename,"w");
  printf("Writting new data \n");
  if(!in){
@@ -124,8 +122,8 @@ if(!( D = malloc(n_points*n_points*sizeof(double)))){
  fprintf(in, "%lf \t %lf \t %lf \t %lf \t %lf \t %lf \t %lf \n", xt, yt, zt, vxt, vyt, vzt,  m[q]+m[p]); //check this mass
  fclose(in);
  n_points--;
- */
- //}while(n_points>2);
+ 
+ }while(n_points>2);
 
 
  return 0;
@@ -198,6 +196,7 @@ void center_mass(double *m, double *D,  int n_points,  double cm, double *F, dou
       if(p!=q){	
         for(j=0;j<n_points;j++){
 	  if((j!=q) && (j!=p)){
+            if(((D[j+(p*n_points)]>5.98)) && (D[j + q*n_points]>5.98) && (D[p + (q*n_points)])<5.98){
 	    fflush(stdout);
 
 	    
@@ -227,11 +226,12 @@ void center_mass(double *m, double *D,  int n_points,  double cm, double *F, dou
                 P[0] = p;             		  
 		}
    		}
-	    F[0] = 0;
+	     F[0] = 0;
             
             
             k++;				      
-	  }		  	  
+	    }
+  	  }	 	  
 	}
       }
     }
