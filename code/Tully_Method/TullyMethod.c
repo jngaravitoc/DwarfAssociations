@@ -16,7 +16,7 @@ TO DO:
 
 // ##########################         Defining functions            #######################
 
-void center_mass(double *m, double *D, int n_points, double * mt, double cm, double *F, double *Q, double *P, double *M);
+void center_mass(double *m, double *D, int n_points, double cm, double *F, double *Q, double *P, double *M);
 void distances(double * x, double * y, double * z, double *D, int n_points); 
 void load_data(char *filename, int n_points, double * x, double * y, double * z, double * vx, double * vy, double * vz, double * m );
 
@@ -32,7 +32,7 @@ int p;
 
 double *D = NULL;
 //double *cm = NULLn");
-double *mt = NULL;
+//double *mt = NULL;
 double *F = NULL;
 double *m=NULL;
 double *Q=NULL;
@@ -45,7 +45,9 @@ double cm;
 double *x=NULL;
 double *y=NULL;
 double *z=NULL;
-double vxt, vyt, vzt;
+double vxt;
+double vyt;
+double vzt;
 double *vx=NULL;
 double *vy=NULL;
 double *vz=NULL;
@@ -63,7 +65,7 @@ vx = malloc(n_points*sizeof(double));
 vy = malloc(n_points*sizeof(double));
 vz = malloc(n_points*sizeof(double));
 m = malloc(n_points*sizeof(double));
-mt = malloc(n_points*n_points*n_points*sizeof(double));
+//mt = malloc(sizeof(double));
 
 if(!( D = malloc(n_points*n_points*sizeof(double)))){
    fprintf(stderr, "problem in allocation 1\n");
@@ -87,7 +89,7 @@ if(!( D = malloc(n_points*n_points*sizeof(double)))){
  distances(x, y, z, D, n_points);
  printf("Done computing distances \n");
  
- center_mass(m, D, n_points, mt, cm, F, Q, P, M);
+ center_mass(m, D, n_points, cm, F, Q, P, M);
  printf("Donde computing center of mass \n");
  
  p = P[0];
@@ -176,7 +178,7 @@ void  distances(double *x, double *y, double *z, double *D, int n_points){
 
 
 
-void center_mass(double *m, double *D,  int n_points, double * mt, double cm, double *F, double *Q, double *P, double *M){
+void center_mass(double *m, double *D,  int n_points,  double cm, double *F, double *Q, double *P, double *M){
 
   int p;
   int q;
@@ -185,7 +187,9 @@ void center_mass(double *m, double *D,  int n_points, double * mt, double cm, do
   int a=0;
   int b=0;
   int c=0;
+  double mt;
   double min;
+  
 
   for(p=0;p<n_points;p++){
     for(q=0;q<n_points;q++){
@@ -200,13 +204,13 @@ void center_mass(double *m, double *D,  int n_points, double * mt, double cm, do
               c = p + (q*n_points);
 
 	      	      
-	      mt[0] = m[p] + m[q];
-	      cm = (m[p]*pow(D[a],2) / mt[k]) + (m[q]*pow(D[b],2) / mt[k]) - (m[q]*m[p]*pow(D[c],2) / pow(mt[k],2));
+	      mt = m[p] + m[q];
+	      cm = (m[p]*pow(D[a],2) / mt) + (m[q]*pow(D[b],2) / mt) - (m[q]*m[p]*pow(D[c],2) / pow(mt,2));
 
 	      
               
-              if(mt[0] > m[j]){
-		F[0] = mt[0]/pow(cm,2);
+              if(mt > m[j]){
+		F[0] = mt/pow(cm,2);
 	      }else{
 		F[0] = m[j]/pow(cm,2);		
 	      }
@@ -220,12 +224,11 @@ void center_mass(double *m, double *D,  int n_points, double * mt, double cm, do
 		Q[0] = q;
                 P[0] = p;             		  
 		}
-	      
-		}
-	     
-	    ;	     
-             
-	     k++;				      
+   		}
+	    F[0] = 0;
+            
+            
+            k++;				      
 	  }		  	  
 	}
       }
