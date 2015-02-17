@@ -16,9 +16,9 @@ TO DO:
 
 // ##########################         Defining functions            #######################
 
-void center_mass(double *m, double *D, double *x, double *y, double *z, int n_points, double * mt, double cm, double *F, double *Q, double *P, double *M);
+void center_mass(double *m, double *D, int n_points, double * mt, double cm, double *F, double *Q, double *P, double *M);
 void distances(double * x, double * y, double * z, double *D, int n_points); 
-void load_data(char *filename, int n_points, double * x, double * y, double * z, double * m );
+void load_data(char *filename, int n_points, double * x, double * y, double * z, double * vx, double * vy, double * vz, double * m );
 
 
 // ######################## Main function ################################
@@ -45,16 +45,23 @@ double cm;
 double *x=NULL;
 double *y=NULL;
 double *z=NULL;
+double vxt, vyt, vzt;
+double *vx=NULL;
+double *vy=NULL;
+double *vz=NULL;
 
+
+
+F = malloc(sizeof(double));
 Q = malloc(sizeof(double));
 P = malloc(sizeof(double));
 M = malloc(sizeof(double));
 x = malloc(n_points*sizeof(double));
 y = malloc(n_points*sizeof(double));
 z = malloc(n_points*sizeof(double));
-// vx = malloc(n_points*sizeof(double));
-// vy = malloc(n_points*sizeof(double));
-// vz = malloc(n_points*sizeof(double));
+vx = malloc(n_points*sizeof(double));
+vy = malloc(n_points*sizeof(double));
+vz = malloc(n_points*sizeof(double));
 m = malloc(n_points*sizeof(double));
 mt = malloc(n_points*n_points*n_points*sizeof(double));
 
@@ -62,16 +69,6 @@ if(!( D = malloc(n_points*n_points*sizeof(double)))){
    fprintf(stderr, "problem in allocation 1\n");
    exit(1);
  }
-
-//f(!(cm = malloc(n_points*n_points*n_points*sizeof(double)))){
-//   fprintf(stderr, "problem in allocation\n");
- //  exit(1);
-// }
- if(!(F = malloc(n_points*n_points*n_points*sizeof(double)))){
-   fprintf(stderr, "problem in allocation 2 \n");
-   exit(1);
- }
-
 
  do{
  FILE *in;
@@ -84,13 +81,13 @@ if(!( D = malloc(n_points*n_points*sizeof(double)))){
  sprintf(filename, "test%05d.txt", n_points);
  printf("%s \n",filename);
  
- load_data(filename, n_points, x, y, z, m);
+ load_data(filename, n_points, x, y, z, vx, vy, vz, m);
  printf("Done loading data \n");
 
  distances(x, y, z, D, n_points);
  printf("Done computing distances \n");
  
- center_mass(m, D, x, y, z,  n_points, mt, cm, F, Q, P, M);
+ center_mass(m, D, n_points, mt, cm, F, Q, P, M);
  printf("Donde computing center of mass \n");
  
  p = P[0];
@@ -99,6 +96,10 @@ if(!( D = malloc(n_points*n_points*sizeof(double)))){
  xt = (1 / (m[p] + m[q])) * (m[p]*x[p] + m[q]*x[q]);
  yt = (1 / (m[p] + m[q])) * (m[p]*y[p] + m[q]*y[q]);
  zt = (1 / (m[p] + m[q])) * (m[p]*z[p] + m[q]*z[q]);
+
+ vxt = (1 / (m[p] + m[q])) * (m[p]*vx[p] + m[q]*vx[q]);;
+ vyt = (1 / (m[p] + m[q])) * (m[p]*vy[p] + m[q]*vy[q]);;
+ vzt = (1 / (m[p] + m[q])) * (m[p]*vz[p] + m[q]*vz[q]);
 
  sprintf(filename, "test%05d.txt", n_points-1);
  
@@ -112,24 +113,14 @@ if(!( D = malloc(n_points*n_points*sizeof(double)))){
 
  for(i=0;i<n_points;i++){
  if((i!=P[0]) && (i!=Q[0])){ // Aca evito que escriba los halos que ya fusione
- fprintf(in, "%lf \t %lf \t %lf \t %lf\n",x[i], y[i], z[i], m[i]);
+ fprintf(in, "%lf \t %lf \t %lf \t %lf \t %lf \t %lf \t %lf\n",x[i], y[i], z[i], vx[i], vy[i], vz[i], m[i]);
  }
  }
 
- fprintf(in, "%lf \t %lf \t %lf \t %lf \n", xt, yt, zt, m[q]+m[p]); //check this mass
+ fprintf(in, "%lf \t %lf \t %lf \t %lf \t %lf \t %lf \t %lf \n", xt, yt, zt, vxt, vyt, vzt,  m[q]+m[p]); //check this mass
  fclose(in);
-  for(i=0;i<n_points*n_points;i++){
-  D[i] = 0;
-}
-  for(i=0;i<n_points*n_points*n_points;i++){
-  F[i] = 0;
-}
-  for(i=0;i<n_points;i++){
-  x[i] = 0;
-  y[i] = 0;
-  z[i] = 0;
-}
-  n_points--;
+ n_points--;
+
  }while(n_points>2);
 
 
@@ -138,12 +129,15 @@ if(!( D = malloc(n_points*n_points*sizeof(double)))){
 
 
 
-void load_data(char *filename, int n_points, double * x, double * y, double * z,  double * m ){
+void load_data(char *filename, int n_points, double * x, double * y, double * z, double * vx, double * vy, double * vz,  double * m ){
         FILE *in;
 	double X;
   	double Y;
 	double Z;
 	double M;
+        double VX;
+        double VY;
+        double VZ;
 	int i;
 
 	in = fopen(filename, "r");
@@ -153,11 +147,14 @@ void load_data(char *filename, int n_points, double * x, double * y, double * z,
 	}
 	
 	for(i=0;i<n_points;i++){
-	  fscanf(in, "%lf %lf %lf %lf \n",&X, &Y, &Z, &M);
+	  fscanf(in, "%lf %lf %lf %lf %lf %lf %lf \n",&X, &Y, &Z, &VX, &VY, &VZ, &M);
 	  x[i] = X; 
 	  y[i] = Y;
 	  z[i] = Z;
 	  m[i] = M;
+          vx[i] = VX;
+          vy[i] = VZ; 
+          vz[i] = VZ;        
 	}
 	fclose(in);
 	
@@ -179,7 +176,7 @@ void  distances(double *x, double *y, double *z, double *D, int n_points){
 
 
 
-void center_mass(double *m, double *D, double *x, double *y, double *z, int n_points, double * mt, double cm, double *F, double *Q, double *P, double *M){
+void center_mass(double *m, double *D,  int n_points, double * mt, double cm, double *F, double *Q, double *P, double *M){
 
   int p;
   int q;
@@ -203,23 +200,23 @@ void center_mass(double *m, double *D, double *x, double *y, double *z, int n_po
               c = p + (q*n_points);
 
 	      	      
-	      mt[k] = m[p] + m[q];
+	      mt[0] = m[p] + m[q];
 	      cm = (m[p]*pow(D[a],2) / mt[k]) + (m[q]*pow(D[b],2) / mt[k]) - (m[q]*m[p]*pow(D[c],2) / pow(mt[k],2));
 
 	      
               
-              if(mt[k] > m[j]){
-		F[k] = mt[k]/pow(cm,2);
+              if(mt[0] > m[j]){
+		F[0] = mt[0]/pow(cm,2);
 	      }else{
-		F[k] = m[j]/pow(cm,2);		
+		F[0] = m[j]/pow(cm,2);		
 	      }
 	     
 	     if(k==0){
               // this is to print just the minimum values of F and to ignore distances of the same particle
 	      min = F[0];}
 	     else{  
-	      if(F[k]<min){
-	       min=F[k];
+	      if(F[0]<min){
+	       min=F[0];
 		Q[0] = q;
                 P[0] = p;             		  
 		}
