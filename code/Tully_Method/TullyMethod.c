@@ -16,7 +16,7 @@ TO DO:
 
 // ##########################         Defining functions            #######################
 
-void center_mass(double *m, double *D, double *x, double *y, double *z, int n_points, double * mt, double * cm, double *F, double *Q, double *P, double *M);
+void center_mass(double *m, double *D, double *x, double *y, double *z, int n_points, double * mt, double cm, double *F, double *Q, double *P, double *M);
 void distances(double * x, double * y, double * z, double *D, int n_points); 
 void load_data(char *filename, int n_points, double * x, double * y, double * z, double * m );
 
@@ -46,13 +46,13 @@ int n_points = atoi(argv[1]);
  double xt;
  double yt;
  double zt;
-
+ double cm;
 
  sprintf(filename, "test%05d.txt", n_points);
  printf("%s \n",filename);
 
  double *D = NULL;
- double *cm = NULL;
+ //double *cm = NULL;
  double *mt = NULL;
  double *F = NULL;
  
@@ -76,10 +76,10 @@ int n_points = atoi(argv[1]);
    exit(1);
  }
 
- if(!(cm = malloc(n_points*n_points*n_points*sizeof(double)))){
-   fprintf(stderr, "problem in allocation\n");
-   exit(1);
- }
+//f(!(cm = malloc(n_points*n_points*n_points*sizeof(double)))){
+//   fprintf(stderr, "problem in allocation\n");
+ //  exit(1);
+// }
  if(!(F = malloc(n_points*n_points*n_points*sizeof(double)))){
    fprintf(stderr, "problem in allocation\n");
    exit(1); 
@@ -87,17 +87,17 @@ int n_points = atoi(argv[1]);
 
  load_data(filename, n_points, x, y, z, m);
 
-
  distances(x, y, z, D, n_points);
 
  center_mass(m, D, x, y, z,  n_points, mt, cm, F, Q, P, M);
- 
+ printf("check_points");
  p = P[0];
  q = Q[0];
 
  xt = (1 / (m[p] + m[q])) * (m[p]*x[p] + m[q]*x[q]);
  yt = (1 / (m[p] + m[q])) * (m[p]*y[p] + m[q]*y[q]);
  zt = (1 / (m[p] + m[q])) * (m[p]*z[p] + m[q]*z[q]);
+ printf("%lf \n", zt);
  sprintf(filename, "test%05d.txt", n_points-1);
  
  
@@ -116,10 +116,7 @@ int n_points = atoi(argv[1]);
  fprintf(in, "%lf \t %lf \t %lf \t %lf \n", xt, yt, zt, m[q]+m[p]); //check this mass
  fclose(in);
 
- //for(i=0;i<n_points*n_points*n_points;i++){
- //printf("%lf \t  %lf \t %lf \n", mt[i],  F[i],  cm[i]);
- //} 
- n_points--;
+  n_points--;
  }while(n_points>2);
 
 
@@ -169,7 +166,7 @@ void  distances(double *x, double *y, double *z, double *D, int n_points){
 
 
 
-void center_mass(double *m, double *D, double *x, double *y, double *z, int n_points, double * mt, double * cm, double *F, double *Q, double *P, double *M){
+void center_mass(double *m, double *D, double *x, double *y, double *z, int n_points, double * mt, double cm, double *F, double *Q, double *P, double *M){
 
   int p;
   int q;
@@ -192,35 +189,31 @@ void center_mass(double *m, double *D, double *x, double *y, double *z, int n_po
               b = j + (q*n_points);
               c = p + (q*n_points);
 
-	      //fprintf(stdout, "%lf %lf %d \t %d %d\n", D[a], D[b], a, b, k);	      
+	      	      
 	      mt[k] = m[p] + m[q];
-	      cm[k] = (m[p]*pow(D[a],2) / mt[k]) + (m[q]*pow(D[b],2) / mt[k]) - (m[q]*m[p]*pow(D[c],2) / pow(mt[k],2));
+	      cm = (m[p]*pow(D[a],2) / mt[k]) + (m[q]*pow(D[b],2) / mt[k]) - (m[q]*m[p]*pow(D[c],2) / pow(mt[k],2));
 
-	       //printf("%lf \n", mt[k]);
-              printf("a \n"); 
+	      
+              
               if(mt[k] > m[j]){
-		F[k] = mt[k]/pow(cm[k],2);
+		F[k] = mt[k]/pow(cm,2);
 	      }else{
-		F[k] = m[j]/pow(cm[k],2);		
+		F[k] = m[j]/pow(cm,2);		
 	      }
 	     
-	     //printf("%lf \t %d \t %d \t %lf \t %lf \t %lf \n ", F[k], p, q, m[p], m[q], mt[k]);
-	      
-	      if(k==0){
+	     if(k==0){
               // this is to print just the minimum values of F and to ignore distances of the same particle
 	      min = F[0];}
 	     else{  
 	      if(F[k]<min){
 	       min=F[k];
 		Q[0] = q;
-                P[0] = p;
-             //printf("%lf \t %d \t %d \t %lf \t %lf \t %lf \n", F[k], p, q, m[p], m[q], mt[k]);
-              		  
+                P[0] = p;             		  
 		}
 	      
 		}
 	     
-	     //printf("%lf \n", min);	     
+	    ;	     
              
 	     k++;				      
 	  }		  	  
