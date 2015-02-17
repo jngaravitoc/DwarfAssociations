@@ -99,8 +99,8 @@ int n_points = atoi(argv[1]);
  yt = (1 / (m[p] + m[q])) * (m[p]*y[p] + m[q]*y[q]);
  zt = (1 / (m[p] + m[q])) * (m[p]*z[p] + m[q]*z[q]);
  sprintf(filename, "test%05d.txt", n_points-1);
-
-
+ 
+ 
  in = fopen(filename,"w");
  if(!in){
  printf("problems opening the file %s\n", filename);
@@ -116,9 +116,9 @@ int n_points = atoi(argv[1]);
  fprintf(in, "%lf \t %lf \t %lf \t %lf \n", xt, yt, zt, m[q]+m[p]); //check this mass
  fclose(in);
 
- for(i=0;i<n_points*n_points*n_points;i++){
- printf("%lf \t %lf \t %lf \t %lf \t %lf \t %lf \t %lf \t %lf \n", mt[i], x[i], y[i], z[i], m[i], F[i], D[i], cm[i]);
- } 
+ //for(i=0;i<n_points*n_points*n_points;i++){
+ //printf("%lf \t  %lf \t %lf \n", mt[i],  F[i],  cm[i]);
+ //} 
  n_points--;
  }while(n_points>2);
 
@@ -197,7 +197,7 @@ void center_mass(double *m, double *D, double *x, double *y, double *z, int n_po
 	      cm[k] = (m[p]*pow(D[a],2) / mt[k]) + (m[q]*pow(D[b],2) / mt[k]) - (m[q]*m[p]*pow(D[c],2) / pow(mt[k],2));
 
 	       //printf("%lf \n", mt[k]);
-              
+              printf("a \n"); 
               if(mt[k] > m[j]){
 		F[k] = mt[k]/pow(cm[k],2);
 	      }else{
