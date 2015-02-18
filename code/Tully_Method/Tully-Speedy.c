@@ -193,10 +193,10 @@ void center_mass(double *m, double *D,  int n_points,  double cm, double *F, dou
 
   for(p=0;p<n_points;p++){
     for(q=0;q<n_points;q++){
-      if(p!=q){	
+      if((p!=q) && (D[p + (q*n_points)]<5.98)){	
         for(j=0;j<n_points;j++){
 	  if((j!=q) && (j!=p)){
-            if(((D[j+(p*n_points)]>5.98)) && (D[j + q*n_points]>5.98) && (D[p + (q*n_points)])<5.98){
+            if(((D[j+(p*n_points)]>5.98)) && (D[j + q*n_points]>5.98) ){
 	    fflush(stdout);
 
 	    
