@@ -188,15 +188,15 @@ void center_mass(double *m, double *D,  int n_points,  double cm, double *F, dou
   int b=0;
   int c=0;
   double mt;
-  double min;
+  double max;
   
 
   for(p=0;p<n_points;p++){
     for(q=0;q<n_points;q++){
-      if((p!=q) && (D[p + (q*n_points)]<1)){	
+      if((p!=q) && (D[p + (q*n_points)]>9.4) && (m[q] == m[p])){	
         for(j=0;j<n_points;j++){
 	  if((j!=q) && (j!=p)){
-            if(((D[j+(p*n_points)]>7.98)) && (D[j + q*n_points]>7.98) ){
+            if(((D[j+(p*n_points)]<4)) && (D[j + q*n_points]<4) ){
 	    fflush(stdout);
 
 	    
@@ -218,10 +218,10 @@ void center_mass(double *m, double *D,  int n_points,  double cm, double *F, dou
 	     
 	     if(k==0){
               // this is to print just the minimum values of F and to ignore distances of the same particle
-	      min = F[0];}
+	      max = F[0];}
 	     else{  
-	      if(F[0]<min){
-	       min=F[0];
+	      if(F[0]>max){
+	       max=F[0];
 		Q[0] = q;
                 P[0] = p;             		  
 		}
