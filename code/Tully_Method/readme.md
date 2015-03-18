@@ -14,10 +14,12 @@ scrit to make the animation.
 
 - A little code to make scatter plots resulting from the simulations.
 
-## BH.c : The code implementing the Barnes Hut Algorithm
-## data-nomw.dat is the data excluding the MW halo particles.
-## Optimizing_Analysis.ipynb is an optimizing method using the masses of the particles
-## plots.py make all the plots needed
-## Selecting_data.ipynb selects data from the original catalogue that is in data/
-## TullyMethod.c is the core code in c
-## TullyMethod.py is the core code in python 
+# Files:
+
+-  BH.c : The code implementing the Barnes Hut Algorithm
+-  data-nomw.dat is the data excluding the MW halo particles.
+-  Optimizing_Analysis.ipynb is an optimizing method using the masses of the particles
+-  plots.py make all the plots needed
+-  Selecting_data.ipynb selects data from the original catalogue that is in data/
+-  TullyMethod.c is the core code in c
+-  TullyMethod.py is the core code in python 
