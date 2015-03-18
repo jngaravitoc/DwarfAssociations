@@ -12,7 +12,7 @@ TO DO:
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-
+#include "BH.h"
 
 // ##########################         Defining functions            #######################
 
@@ -31,8 +31,6 @@ int q;
 int p;
 
 double *D = NULL;
-//double *cm = NULLn");
-//double *mt = NULL;
 double *F = NULL;
 double *m=NULL;
 double *Q=NULL;
@@ -52,7 +50,12 @@ double *vx=NULL;
 double *vy=NULL;
 double *vz=NULL;
 
+if(!argc){
 
+printf("You have to specify the number of halos \n");
+
+
+}
 
 F = malloc(sizeof(double));
 Q = malloc(sizeof(double));
@@ -72,14 +75,10 @@ if(!( D = malloc(n_points*n_points*sizeof(double)))){
    exit(1);
  }
 
- do{
+// do{
  FILE *in;
  char filename[100];
  
-//double *vx;
-//double *vy;
-//double *vz;
-
  sprintf(filename, "test%05d.txt", n_points);
  printf("%s \n",filename);
  
@@ -88,9 +87,13 @@ if(!( D = malloc(n_points*n_points*sizeof(double)))){
 
  distances(x, y, z, D, n_points);
  printf("Done computing distances \n");
- 
+ for(i=0;i<n_points;i++){
+ printf("%lf \n", D[i]);
+ BarnesHut(x, y, z, n_points);
+}
+ /*
  center_mass(m, D, n_points, cm, F, Q, P, M);
- printf("Donde computing center of mass \n");
+ printf("Done computing center of mass \n");
  
  p = P[0];
  q = Q[0];
@@ -125,7 +128,7 @@ if(!( D = malloc(n_points*n_points*sizeof(double)))){
 
  }while(n_points>2);
 
-
+*/
  return 0;
 }
 
