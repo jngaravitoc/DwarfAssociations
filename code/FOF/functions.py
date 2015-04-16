@@ -39,12 +39,16 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
         os.system(('./../../../HackFOF/src/fof -e %f -m 2 < ' snap_fof)%(LL_min/h)) 
         fof_groups = loadtxt('fof.grp', skiprows=1)
         N_as = len(list(set(fof_groups)))
+        ## Esto sobrescribe los datos de las asociaciones--------------------------
 	for i in range(1,N_as):
     		index = where(fof_groups==i)
     		index = index[0]
     		x_LLmin = x[index]
     		y_LLmin = y[index]
     		z_LLmin = z[index]
+                vx_LLmin = vx[index]
+                vy_LLmin = vy[index]
+                vz_LLmin = vz[index]
         
         os.system(('./../../../HackFOF/src/fof -e %f -m 2 < ' snap_fof)%(LL_max/h)) 
 	fof_groups = loadtxt('fof.grp', skiprows=1)
@@ -55,5 +59,15 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
                 x_LLmax = x[index]
                 y_LLmax = y[index]
                 z_LLmax = z[index]
+                vx_LLmax = vx[index]
+                vy_LLmax = vy[index]
+                vz_LLmax = vz[index]
+ 	return x_LLmin, y_LLmin, Z_LLmin, vx_LLmin, vy_LLmin, vz_LLmin, x_LLmax, y_LLmax, z_LLmax, vx_LLmax, vy_LLmax, vz_LLmax
 
+
+def sigma_x(x, y, z):
+	
+
+def sigma_v(vx, vy, vz):
+	
 
