@@ -49,8 +49,8 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
                 vx_LLmin = vx[index]
                 vy_LLmin = vy[index]
                 vz_LLmin = vz[index]
-        
-        os.system(('./../../../HackFOF/src/fof -e %f -m 2 < ' snap_fof)%(LL_max/h)) 
+        #   [-px <xPeriod>] [-py <yPeriod>] [-pz <zPeriod>] FOF periodic conditions       
+        os.system(('./../../../HackFOF/src/fof -e %f -m 2 -px 75000  < ' snap_fof)%(LL_max/h)) 
 	fof_groups = loadtxt('fof.grp', skiprows=1)
         N_as = len(list(set(fof_groups)))
         for i in range(1,N_as):
