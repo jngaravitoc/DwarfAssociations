@@ -37,22 +37,22 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
         LL_min = 526 # Linking Lenght in Kpc, taken from observational treshold (FOF-observed-associations.ipynb)
         LL_max = 724 # Max Linking Length in Kpc
         os.system(('./../../../HackFOF/src/fof -e %f -m 2 -px 75000 -pz 75000 < ' +  snap_fof)%(LL_min*h)) 
-        fof_groups = loadtxt('fof.grp', skiprows=1)
+        fof_groups = np.loadtxt('fof.grp', skiprows=1)
         N_as = len(list(set(fof_groups)))
         ## Esto sobrescribe los datos de las asociaciones--------------------------
         f = open("A_min" + snap_fof, "w") 
 	for j in range(len(x)):
-		f.wrtie(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j])        
+		f.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n" )%(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j]))        
         f.close()
         f = open("A_max" + snap_fof, "w")
         #  [-px <xPeriod>] [-py <yPeriod>] [-pz <zPeriod>] FOF periodic conditions       
         os.system(('./../../../HackFOF/src/fof -e %f -m 2 -px 75000 -pz 7500 < '+ snap_fof)%(LL_max*h)) 
-	fof_groups = loadtxt('fof.grp', skiprows=1)
+	fof_groups = np.loadtxt('fof.grp', skiprows=1)
         N_as = len(list(set(fof_groups)))
         for j in range(len(x)):
-        	f.wrtie(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j])
+        	f.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n" )%(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j]))
         f.close()
- 	return x_LLmin, y_LLmin, Z_LLmin, vx_LLmin, vy_LLmin, vz_LLmin, x_LLmax, y_LLmax, z_LLmax, vx_LLmax, vy_LLmax, vz_LLmax
+ 	#return x_LLmin, y_LLmin, Z_LLmin, vx_LLmin, vy_LLmin, vz_LLmin, x_LLmax, y_LLmax, z_LLmax, vx_LLmax, vy_LLmax, vz_LLmax
 
 
 def dispersiones_x(snap_fof):
