@@ -11,8 +11,8 @@ def loading_snapshot(snap_name):
         vx = data[:,4]
         vy = data[:,5]
         vz = data[:,6]
-        Mag  = data[:,7]
-	index = np.where(Mag>8.81)
+        Mag  = data[:,8]
+	index = np.where(Mag>-18.81)
         index = index[0]
         return x[index], y[index], z[index], vx[index], vy[index], vz[index], Mag[index]
 
@@ -27,7 +27,7 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
 	f.write("%d\n"%N) #points in total 
 	f.write("%d\n"%N) #points in 'DM'
 	f.write("0\n") #gas
-	f.write("%d\n") #stars
+	f.write("0\n") #stars
 	f.write("0.01\n") # time
 	f.write("0\n") # nactive
 	for i in range(len(x)):
@@ -36,9 +36,9 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
         h = 0.7
         LL_min = 526 # Linking Lenght in Kpc, taken from observational treshold (FOF-observed-associations.ipynb)
         LL_max = 724 # Max Linking Length in Kpc
-        os.system(('./../../../HackFOF/src/fof -e %f -m 2 -px 75000 -pz 75000 < ' +  snap_fof)%(LL_min*h)) 
+        os.system(('./../../../HackFOF/src/fof -e %f -m 2  < ' +  snap_fof)%(LL_min*h)) 
         fof_groups = np.loadtxt('fof.grp', skiprows=1)
-        N_as = len(list(set(fof_groups)))
+        N_as_min = len(list(set(fof_groups)))
         ## Esto sobrescribe los datos de las asociaciones--------------------------
         f = open("A_min" + snap_fof, "w") 
 	for j in range(len(x)):
@@ -46,14 +46,13 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
         f.close()
         f = open("A_max" + snap_fof, "w")
         #  [-px <xPeriod>] [-py <yPeriod>] [-pz <zPeriod>] FOF periodic conditions       
-        os.system(('./../../../HackFOF/src/fof -e %f -m 2 -px 75000 -pz 7500 < '+ snap_fof)%(LL_max*h)) 
+        os.system(('./../../../HackFOF/src/fof -e %f -m 2  < '+ snap_fof)%(LL_max*h)) 
 	fof_groups = np.loadtxt('fof.grp', skiprows=1)
-        N_as = len(list(set(fof_groups)))
+        N_as_max = len(list(set(fof_groups)))
         for j in range(len(x)):
         	f.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n" )%(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j]))
         f.close()
- 	#return x_LLmin, y_LLmin, Z_LLmin, vx_LLmin, vy_LLmin, vz_LLmin, x_LLmax, y_LLmax, z_LLmax, vx_LLmax, vy_LLmax, vz_LLmax
-
+	return N_as_min, N_as_max
 
 def dispersiones_x(snap_fof):
         data_min = np.loadtxt("A_min" + snap_fof)
@@ -128,7 +127,7 @@ def dispersiones_x(snap_fof):
                 V_disp = std(V)
                 X_disp = std(X)  
 
-#def 3dplot():
-		
+#def 3dplot(x, y, z)
+			
 	
 
