@@ -12,7 +12,7 @@ def loading_snapshot(snap_name):
         vy = data[:,5]
         vz = data[:,6]
         Mag  = data[:,8]
-	index = np.where(Mag>-18.81)
+	index = np.where(Mag<-8)
         index = index[0]
         return x[index], y[index], z[index], vx[index], vy[index], vz[index], Mag[index]
 
@@ -36,7 +36,7 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
         h = 0.7
         LL_min = 526 # Linking Lenght in Kpc, taken from observational treshold (FOF-observed-associations.ipynb)
         LL_max = 724 # Max Linking Length in Kpc
-        os.system(('./../../../HackFOF/src/fof -e %f -m 2  < ' +  snap_fof)%(LL_min*h)) 
+        os.system(('./../../../HackFOF/src/fof -e %f -m 2  -px 75000 -pz 75000 < ' +  snap_fof)%(LL_min*h)) 
         fof_groups = np.loadtxt('fof.grp', skiprows=1)
         N_as_min = len(list(set(fof_groups)))
         ## Esto sobrescribe los datos de las asociaciones--------------------------
@@ -46,7 +46,7 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
         f.close()
         f = open("A_max" + snap_fof, "w")
         #  [-px <xPeriod>] [-py <yPeriod>] [-pz <zPeriod>] FOF periodic conditions       
-        os.system(('./../../../HackFOF/src/fof -e %f -m 2  < '+ snap_fof)%(LL_max*h)) 
+        os.system(('./../../../HackFOF/src/fof -e %f -m 2  -px 75000 -pz 75000 < '+ snap_fof)%(LL_max*h)) 
 	fof_groups = np.loadtxt('fof.grp', skiprows=1)
         N_as_max = len(list(set(fof_groups)))
         for j in range(len(x)):
