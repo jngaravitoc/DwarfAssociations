@@ -25,40 +25,29 @@ for i in range (53):
         N_asso_dm_max.append(NDM_max)
 	N_asso_stars_min.append(Nstars_min)
 	N_asso_stars_max.append(Nstars_max)
+        print "xdm = ", len(x), "x stars = ", len(x_stars)
 
-
-plt.hist(N_asso_dm_min, color='k', alpha=0.6, label=r"$\mathrm{LL = 526h\ Mpc}$")
+plt.figure(figsize=(15, 10))
+plt.subplot(1, 2, 1)
+plt.hist(N_asso_dm_min, color='k', alpha=0.6, label=r"$\mathrm{LL = 526Mpc\ h^{-1}}$")
+plt.hist(N_asso_dm_max, color='orange', alpha=0.6, label=r"$\mathrm{LL = 724Mpc\ h^{-1}}$")
 plt.title(r"$\mathrm{Dark\ Associations}$", fontsize=25)
 plt.xlabel(r"$\mathrm{Number\ of\ Associations\ per\ LG}$", fontsize=25)
 plt.legend()
-plt.savefig("Nassociations_DM_min.png", bbox_inches="tight")
-plt.show()
-plt.close()
+#plt.savefig("Nassociations_DM_min.png", bbox_inches="tight")
 
-plt.hist(N_asso_dm_max, color='k', alpha=0.6, label=r"$\mathrm{LL = 724h\ Mpc}$")
-plt.title(r"$\mathrm{Dark\ Associations}$", fontsize=25)
-plt.xlabel(r"$\mathrm{Number\ of\ Associations\ per\ LG}$", fontsize=25)
-plt.legend()
-plt.savefig("Nassociations_DM_max.png", bbox_inches="tight")
-plt.show()
-plt.close()
 
-plt.hist(N_asso_stars_min, color='purple', alpha=0.6, label=r"$\mathrm{LL = 526h\ Mpc}$")
+plt.subplot(1, 2, 2)
+plt.hist(N_asso_stars_min, color='purple', alpha=0.6, label=r"$\mathrm{LL = 526Mpc\ h^{-1}}$")
+plt.hist(N_asso_stars_max, color='blue', alpha=0.6, label=r"$\mathrm{LL = 724Mpc h^{-1}}$")
 plt.title(r"$\mathrm{Observable\ Associations}$", fontsize=25)
 plt.xlabel(r"$\mathrm{Number\ of\ Associations\ per\ LG}$", fontsize=25)
 plt.legend()
-plt.savefig("Nassociations_stars_min.png", bbox_inches="tight")
+plt.savefig("Nassociations.png", bbox_inches="tight")
 plt.show()
 plt.close()
 
 
-plt.hist(N_asso_stars_max, color='purple', alpha=0.6, label=r"$\mathrm{LL = 724h\ Mpc}$")
-plt.title(r"$\mathrm{Observable\ Associations}$", fontsize=25)
-plt.xlabel(r"$\mathrm{Number\ of\ Associations\ per\ LG}$", fontsize=25)
-plt.legend()
-plt.savefig("Nassociations_stars_max.png", bbox_inches="tight")
-plt.show()
-plt.close()
 
 
 """
