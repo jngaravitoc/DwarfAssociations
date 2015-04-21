@@ -12,7 +12,7 @@ N_asso_stars_max = []
 NassDM_min = []
 NassDM_max = []
 NassStars_min = []
-NassDtars_max = []
+NassStars_max = []
 
 for i in range (53):
 	snap_name = "Illustris_group_"+str(i)+".dat"
@@ -33,30 +33,52 @@ for i in range (53):
         
 	Nass, asso =  N_associations("A_min"+snap_fof_DM)
         NassDM_min += Nass
+	Nass_max, asso =  N_associations("A_max"+snap_fof_DM)
+        NassDM_max += Nass_max
+        Nass_stars, asso =  N_associations("A_min"+snap_fof_stars)
+        NassStars_min += Nass
+        Nass_stars_max, asso =  N_associations("A_max"+snap_fof_stars)
+        NassStars_max += Nass_stars_max
+
+
 plt.figure(figsize=(15, 10))
 plt.subplot(1, 2, 1)
-plt.hist(N_asso_dm_min, color='k', alpha=0.6, label=r"$\mathrm{LL = 526Mpc\ h^{-1}}$")
-plt.hist(N_asso_dm_max, color='orange', alpha=0.6, label=r"$\mathrm{LL = 724Mpc\ h^{-1}}$")
+plt.hist(N_asso_dm_min, color='k', alpha=0.8, label=r"$\mathrm{LL = 526Mpc\ h^{-1}}$", bins=range(0, 20 + 1, 1))
+plt.hist(N_asso_dm_max, color='k', alpha=0.4, label=r"$\mathrm{LL = 724Mpc\ h^{-1}}$", bins=range(0, 20 + 1, 1))
 plt.title(r"$\mathrm{Dark\ Associations}$", fontsize=25)
-plt.xlabel(r"$\mathrm{Number\ of\ Associations\ per\ LG}$", fontsize=25)
+plt.xlabel(r"$\mathrm{Number\ of\ Associations\ per\ Group}$", fontsize=25)
 plt.legend()
 #plt.savefig("Nassociations_DM_min.png", bbox_inches="tight")
 
 
 plt.subplot(1, 2, 2)
-plt.hist(N_asso_stars_min, color='purple', alpha=0.6, label=r"$\mathrm{LL = 526Mpc\ h^{-1}}$")
-plt.hist(N_asso_stars_max, color='blue', alpha=0.6, label=r"$\mathrm{LL = 724Mpc h^{-1}}$")
+plt.hist(N_asso_stars_min, color='purple', alpha=0.6, label=r"$\mathrm{LL = 526Mpc\ h^{-1}}$", bins=range(0, 20 + 1, 1))
+plt.hist(N_asso_stars_max, color='blue', alpha=0.6, label=r"$\mathrm{LL = 724Mpc h^{-1}}$", bins=range(0, 20 + 1, 1))
 plt.title(r"$\mathrm{Observable\ Associations}$", fontsize=25)
-plt.xlabel(r"$\mathrm{Number\ of\ Associations\ per\ LG}$", fontsize=25)
+plt.xlabel(r"$\mathrm{Number\ of\ Associations\ per\ Group}$", fontsize=25)
 plt.legend()
 plt.savefig("Nassociations.png", bbox_inches="tight")
 plt.show()
 plt.close()
 
+plt.figure(figsize=(15, 10))
+plt.subplot(1, 2, 1)
+plt.hist(NassDM_min, color="k", alpha=0.8, label=r"$\mathrm{LL = 526Mpc\ h^{-1}}$", bins=range(0, 20 + 1, 1))
+plt.hist(NassDM_max, color="k", alpha=0.4, label=r"$\mathrm{LL = 724Mpc h^{-1}}$", bins=range(0, 20 + 1, 1))
+plt.xlabel(r"$\mathrm{Number\ of\ members\ per\ Association}$", fontsize=25)
+plt.xlim([0, 20])
+plt.legend()
 
-plt.hist(NassDM_min, bins=20)
+plt.subplot(1, 2, 2)
+plt.hist(NassStars_min, color="purple", alpha=0.6, label=r"$\mathrm{LL = 526Mpc\ h^{-1}}$", bins=range(0, 20 + 1, 1))
+plt.hist(NassStars_max, color="blue", alpha=0.6, label=r"$\mathrm{LL = 724Mpc h^{-1}}$", bins=range(0, 20 + 1, 1))
+plt.xlabel(r"$\mathrm{Number\ of\ members\ per\ Association}$", fontsize=25)
+plt.xlim([0, 20])
+plt.legend()
+plt.savefig("Nmembersassociations.png", bbox_inches="tight")
 plt.show()
 plt.close()
+
 
 """
 print "Dark Matter"
