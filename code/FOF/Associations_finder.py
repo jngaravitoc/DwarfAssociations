@@ -36,9 +36,13 @@ for i in range (53):
 	Nass_max, asso =  N_associations("A_max"+snap_fof_DM)
         NassDM_max += Nass_max
         Nass_stars, asso =  N_associations("A_min"+snap_fof_stars)
-        NassStars_min += Nass
+        NassStars_min += Nass_stars
         Nass_stars_max, asso =  N_associations("A_max"+snap_fof_stars)
         NassStars_max += Nass_stars_max
+	sigmax_min, sigmav_min, sigmax_max, sigmav_max = dispersiones(snap_fof_DM)
+	plt.scatter(sigmax_min, sigmav_min)
+	plt.show()
+	plt.close()
 
 
 plt.figure(figsize=(15, 10))
@@ -67,6 +71,7 @@ plt.hist(NassDM_min, color="k", alpha=0.8, label=r"$\mathrm{LL = 526Mpc\ h^{-1}}
 plt.hist(NassDM_max, color="k", alpha=0.4, label=r"$\mathrm{LL = 724Mpc h^{-1}}$", bins=range(0, 20 + 1, 1))
 plt.xlabel(r"$\mathrm{Number\ of\ members\ per\ Association}$", fontsize=25)
 plt.xlim([0, 20])
+plt.ylim([0, 250])
 plt.legend()
 
 plt.subplot(1, 2, 2)
@@ -74,6 +79,7 @@ plt.hist(NassStars_min, color="purple", alpha=0.6, label=r"$\mathrm{LL = 526Mpc\
 plt.hist(NassStars_max, color="blue", alpha=0.6, label=r"$\mathrm{LL = 724Mpc h^{-1}}$", bins=range(0, 20 + 1, 1))
 plt.xlabel(r"$\mathrm{Number\ of\ members\ per\ Association}$", fontsize=25)
 plt.xlim([0, 20])
+plt.ylim([0, 250])
 plt.legend()
 plt.savefig("Nmembersassociations.png", bbox_inches="tight")
 plt.show()

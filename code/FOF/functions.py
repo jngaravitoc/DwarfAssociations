@@ -76,7 +76,7 @@ def N_associations(name):
 	return N_count, Asso
 
 
-def dispersiones_x(snap_fof):
+def dispersiones(snap_fof):
         data_min = np.loadtxt("A_min" + snap_fof)
         data_max = np.loadtxt("A_max" + snap_fof)
         x_min = data_min[:,0]
@@ -93,12 +93,15 @@ def dispersiones_x(snap_fof):
         vy_max = data_max[:,4]
         vz_max = data_max[:,5]
         N_max = data_max[:,6]
-       	N_min = len(list(set(fof_groups)))
+       	N_min = data_min[:,6]
+        N_as_min = len(list(set(N_min)))
+        N_as_max = len(list(set(N_max)))
         sigmax_min = np.zeros(N_min)
         sigmav_min = np.zeros(N_min)
         sigmax_max = np.zeros(N_max)
         sigmav_max = np.zeros(N_max)
-	for i in range(1,N_as_min):
+	M = 1.0
+	for i in range(0,N_as_min):
         	index = np.where(N_min==i)
                 index = index[0]
                 x_LLmin = x_min[index]
@@ -121,9 +124,9 @@ def dispersiones_x(snap_fof):
     		vz_LLmin -= Vz_cm 
     		X = sqrt(x_LLmin**2 + y_LLmin**2 + z_LLmin**2)
     		V = sqrt(vx_LLmin**2 + vy_LLmin**2 + vz_LLmin**2)
-    		V_disp = std(V)
-    		X_disp = std(X)	        
-	for i in range(1,N_as_max):
+    		sigmav_min[i] = std(V)
+    		sigmax_min[i] = std(X)	        
+	for i in range(0,N_as_max):
                 index = np.where(N_max==i)
                 index = index[0]
                 x_LLmax = x_max[index]
@@ -146,9 +149,9 @@ def dispersiones_x(snap_fof):
                 vz_LLmax -= Vz_cm                 
                 X = sqrt(x_LLmax**2 + y_LLmax**2 + z_LLmax**2)
                 V = sqrt(vx_LLmax**2 + vy_LLmax**2 + vz_LLmax**2)
-                V_disp = std(V)
-                X_disp = std(X)  
-
+                sigmav_max[i] = std(V)
+                sigmax_max[i] = std(X)  
+	return sigmax_min, sigmav_min, sigmax_max, sigmav_max
 #def 3dplot(x, y, z)
 			
 	
