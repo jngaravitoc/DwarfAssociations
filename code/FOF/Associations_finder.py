@@ -9,6 +9,11 @@ N_asso_dm_max = []
 N_asso_stars_min = []
 N_asso_stars_max = []
 
+NassDM_min = []
+NassDM_max = []
+NassStars_min = []
+NassDtars_max = []
+
 for i in range (53):
 	snap_name = "Illustris_group_"+str(i)+".dat"
 	x, y, z, vx, vy, vz, Mag =  loading_snapshot("../../data/Illustris/" + snap_name)
@@ -25,8 +30,9 @@ for i in range (53):
         N_asso_dm_max.append(NDM_max)
 	N_asso_stars_min.append(Nstars_min)
 	N_asso_stars_max.append(Nstars_max)
-        print "xdm = ", len(x), "x stars = ", len(x_stars)
-
+        
+	Nass, asso =  N_associations("A_min"+snap_fof_DM)
+        NassDM_min += Nass
 plt.figure(figsize=(15, 10))
 plt.subplot(1, 2, 1)
 plt.hist(N_asso_dm_min, color='k', alpha=0.6, label=r"$\mathrm{LL = 526Mpc\ h^{-1}}$")
@@ -48,7 +54,9 @@ plt.show()
 plt.close()
 
 
-
+plt.hist(NassDM_min, bins=20)
+plt.show()
+plt.close()
 
 """
 print "Dark Matter"

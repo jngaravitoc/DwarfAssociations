@@ -2,6 +2,7 @@ import numpy as np
 import scipy as sp
 import os
 
+# loading snaphot: Read the data from the snapshots.
 
 def loading_snapshot(snap_name):
 	data = np.loadtxt(snap_name)
@@ -12,15 +13,18 @@ def loading_snapshot(snap_name):
         vy = data[:,5]
         vz = data[:,6]
         Mag  = data[:,8]
-	#index = np.where(Mag<-8)
-        #index = index[0]
         return x, y, z, vx, vy, vz, Mag
 
+# stars select the baryons from the snapshot, and select those who are visible to the current instruments (Mag<-8)
+
 def stars(x, y, z, vx, vy, vz, Mag):
-        index = np.where(Mag<-8)
+        index = np.where(Mag<-8)# Acording to Tully. et al 2006 this is the faintest observed galaxy
         index = index[0]
         return x[index], y[index], z[index], vx[index], vy[index], vz[index]
 
+
+
+# fof runs the fof algorithm.
 
 def fof(x, y, z, vx, vy, vz, N, snap_fof):
 	f = open(snap_fof, "w")
@@ -30,10 +34,12 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
 	f.write("0\n") #stars
 	f.write("0.01\n") # time
 	f.write("0\n") # nactive
+        # up to here is the fof header format
 	for i in range(len(x)):
     		f.write(("%f \t %f \t %f  \n")%(x[i], y[i], z[i]))
 	f.close()
         h = 0.7
+        # here I define the linking lenghts 
         LL_min = 526 # Linking Lenght in Kpc, taken from observational treshold (FOF-observed-associations.ipynb)
         LL_max = 724 # Max Linking Length in Kpc
         os.system(('./../../../HackFOF/src/fof -e %f -m 2  -px 75000 -py 75000 -pz 75000 < ' +  snap_fof)%(LL_min*h)) 
@@ -55,7 +61,20 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
 	return N_as_min, N_as_max
 
 
-#def N_associations()
+def N_associations(name):
+	N_count = []
+        Asso = []
+	data = np.loadtxt(name)
+        Nasso = data[:,6]
+        L = list(Nasso)
+        N = len(list(set(Nasso)))
+        for i in range(N):
+		x = L.count(i)
+                if x<100:
+			N_count.append(x)
+                	Asso.append(i)
+	return N_count, Asso
+
 
 def dispersiones_x(snap_fof):
         data_min = np.loadtxt("A_min" + snap_fof)
