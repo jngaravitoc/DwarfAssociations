@@ -15,6 +15,7 @@ NassStars_min = []
 NassStars_max = []
 
 for i in range (53):
+	print "Grupo =", i
 	snap_name = "Illustris_group_"+str(i)+".dat"
 	x, y, z, vx, vy, vz, Mag =  loading_snapshot("../../data/Illustris/" + snap_name)
 	#print Mag
@@ -40,9 +41,9 @@ for i in range (53):
         Nass_stars_max, asso =  N_associations("A_max"+snap_fof_stars)
         NassStars_max += Nass_stars_max
 	sigmax_min, sigmav_min, sigmax_max, sigmav_max = dispersiones(snap_fof_DM)
-	plt.scatter(sigmax_min, sigmav_min)
-	plt.show()
-	plt.close()
+plt.scatter(sigmax_min, sigmav_min)
+plt.show()
+plt.close()
 
 
 plt.figure(figsize=(15, 10))
