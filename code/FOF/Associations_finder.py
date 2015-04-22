@@ -41,9 +41,19 @@ for i in range (53):
         Nass_stars_max, asso =  N_associations("A_max"+snap_fof_stars)
         NassStars_max += Nass_stars_max
 	sigmax_min, sigmav_min, sigmax_max, sigmav_max = dispersiones(snap_fof_DM)
-plt.scatter(sigmax_min, sigmav_min)
-plt.show()
-plt.close()
+        print len(sigmax_min), len(Nass)	
+	plt.figure(figsize=(15, 10))
+        plt.subplot(2, 2, 1)
+	plt.scatter(sigmax_min, sigmav_min, c='k', alpha=0.5)
+        plt.scatter(sigmax_max, sigmav_max, c='k', alpha=1)
+	plt.subplot(2, 2, 3)
+	plt.scatter(Nass, sigmax_min, c='k', alpha=0.5)
+        plt.scatter(Nass_max, sigmax_max, c='k', alpha=1)
+        plt.subplot(2, 2, 4)
+        plt.scatter(Nass, sigmav_min, c='k', alpha=0.5)
+        plt.scatter(Nass_max, sigmav_max, c='k', alpha=1)
+        plt.show()
+        plt.close()
 
 
 plt.figure(figsize=(15, 10))
