@@ -44,41 +44,64 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
         LL_max = 724 # Max Linking Length in Kpc
         os.system(('./../../../HackFOF/src/fof -e %f -m 2  -px 75000 -py 75000 -pz 75000 < ' +  snap_fof)%(LL_min*h)) 
         fof_groups = np.loadtxt('fof.grp', skiprows=1)
-        N_as_min = len(list(set(fof_groups)))
+	groups1 = list(fof_groups)
+	N_as_min = len(list(set(fof_groups)))
+	new_fof_min = 0
+	for k in range(N_as_min):
+		XX = groups1.count(k)
+		if XX < 30:
+			new_fof_min += 1	
         ## Esto sobrescribe los datos de las asociaciones--------------------------
-        f = open("A_min" + snap_fof, "w") 
+        f = open("data/A_min" + snap_fof, "w") 
 	for j in range(len(x)):
 		f.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n" )%(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j]))        
         f.close()
-        f = open("A_max" + snap_fof, "w")
+        f = open("data/A_max" + snap_fof, "w")
         #  [-px <xPeriod>] [-py <yPeriod>] [-pz <zPeriod>] FOF periodic conditions       
         os.system(('./../../../HackFOF/src/fof -e %f -m 2  -px 75000 -py 75000 -pz 75000 < '+ snap_fof)%(LL_max*h)) 
 	fof_groups = np.loadtxt('fof.grp', skiprows=1)
+	groups2 = list(fof_groups)
         N_as_max = len(list(set(fof_groups)))
+	new_fof_max = 0
+        for k in range(N_as_min):
+      		XX = groups2.count(k)
+                if XX < 30:
+                        new_fof_max += 1
         for j in range(len(x)):
         	f.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n" )%(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j]))
         f.close()
-	return N_as_min, N_as_max
+	return new_fof_min, new_fof_max
 
+
+###########################################################
+#                                                         #
+#  N_associations find the number of members per group    #
+#                                                         #
+###########################################################
 
 def N_associations(name):
 	N_count = []
         Asso = []
-	data = np.loadtxt(name)
+	data = np.loadtxt("data/" + name)
         Nasso = data[:,6]
         L = list(Nasso)
         N = len(list(set(Nasso)))
         for i in range(N):
 		x = L.count(i)
-                if x<100:
+                if x<25:
 			N_count.append(x)
                 	Asso.append(i)
 	return N_count, Asso
 
+##########################################################
+#                                                        #
+# Disperiosnes: Finds the dispersions of  every group    #
+#                                                        #
+##########################################################
 
 def dispersiones(snap_fof):
-        data_min = np.loadtxt("A_min" + snap_fof)
-        data_max = np.loadtxt("A_max" + snap_fof)
+        data_min = np.loadtxt("data/A_min" + snap_fof)
+        data_max = np.loadtxt("data/A_max" + snap_fof)
         x_min = data_min[:,0]
         y_min = data_min[:,1]
         z_min = data_min[:,2]
@@ -100,12 +123,12 @@ def dispersiones(snap_fof):
         sigmav_min = []
         sigmax_max = []# The +1 is beacuse the snap17 max have all the memebers in 1 a in 2 so it doesnt have 0 and sigmav_max brokes
         sigmav_max = []
-        print "N ass = ", N_as_min
+        #rint "N ass = ", N_as_min
 	for i in range(int(min(list(set(N_min)))),int(max(list(set(N_min)))+1)):
         	index = np.where(N_min==i)
                 index = index[0]
-		print "index=", len(index)
-                if (len(index)<100):
+		#print "index=", len(index)
+                if (len(index)<25):
 			x_LLmin = x_min[index]
                 	y_LLmin = y_min[index]
                         z_LLmin = z_min[index]
@@ -129,13 +152,12 @@ def dispersiones(snap_fof):
     			X = np.sqrt(x_LLmin**2 + y_LLmin**2 + z_LLmin**2)
     			V = np.sqrt(vx_LLmin**2 + vy_LLmin**2 + vz_LLmin**2)
     			sigmav_min.append(np.std(V))
-    			sigmax_min.append(np.std(X))	
-			print "hola"       
+    			sigmax_min.append(np.std(X))	       
 	for i in range(int(min(list(set(N_max)))),int(max(list(set(N_max)))+1)):
-		print "Nass max = ", N_as_max
+		#print "Nass max = ", N_as_max
                 index = np.where(N_max==i)
                 index = index[0]
-        	if (len(index)<100):
+        	if (len(index)<25):
 	        	x_LLmax = x_max[index]
                 	y_LLmax = y_max[index]
                 	z_LLmax = z_max[index]
