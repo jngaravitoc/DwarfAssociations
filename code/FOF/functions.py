@@ -188,3 +188,43 @@ def dispersiones(snap_fof):
 			
 	
 
+##################################################
+#                                                #
+#                     DARKS                      #  
+#                                                #
+##################################################
+
+def darks():
+	DM = np.loadtxt("data/A_minFOFDMIllustris_group_26.dat")
+	stars = np.loadtxt("data/A_minFOF_starsIllustris_group_26.dat")
+	x_dm = DM[:,0]
+        y_dm = DM[:,1]
+        z_dm = DM[:,2]
+	x_s = stars[:,0]
+        y_s = stars[:,1]
+        z_s = stars[:,2]
+	assdm = DM[:,6]
+	asss = stars[:,6]
+	Nasss = set(list(asss))
+	NassDM = set(list(assdm))
+	noass =  0 
+	for i in range(Nasss):
+		if list(asss).count > 25:
+			noass = i
+	index1 = np.where(asss != noass)
+	XS = x_s[index1]
+	YS = y_s[index1]
+	ZS = z_z[index1]	
+	print Nasss, NassDM
+	for i in range(Nass):
+		index = np.where(NasssDM == i)
+		index = index[0]
+		if len(index) < 25:
+			index2 = np.where(assdm == i)
+			XDM = x_dm[index2]
+			YDM = y_dm[index2]
+			ZDM = z_dm[index2]
+			
+	#index = np.where((x_dm == x_s)&&(y_dm == y_s)&&(z_dm==z_s))
+	
+
