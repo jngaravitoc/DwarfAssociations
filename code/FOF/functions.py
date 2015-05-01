@@ -216,14 +216,20 @@ def darks():
 	YS = y_s[index1]
 	ZS = z_z[index1]	
 	print Nasss, NassDM
+	noassdm = 0
 	for i in range(Nass):
 		index = np.where(NasssDM == i)
 		index = index[0]
-		if len(index) < 25:
-			index2 = np.where(assdm == i)
-			XDM = x_dm[index2]
-			YDM = y_dm[index2]
-			ZDM = z_dm[index2]
+		if len(index) > 25:
+			noassdm == i
+	index2 = np.where(ass != noassdm)
+	XDM = x_dm[index2]
+	YDM = y_dm[index2]
+	ZDM = z_dm[index2]
+
+	index3 = np.where((XDM == XS) && (YDM = YS) && (ZDM = ZS) )
+	index3 = index3[0]
+	index4 = linspace(0, len(XDM), len(XDM))
 			
 	#index = np.where((x_dm == x_s)&&(y_dm == y_s)&&(z_dm==z_s))
 	
