@@ -46,11 +46,11 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
         fof_groups = np.loadtxt('fof.grp', skiprows=1)
 	groups1 = list(fof_groups)
 	N_as_min = len(list(set(fof_groups)))
-	new_fof_min = 0
-	for k in range(N_as_min):
-		XX = groups1.count(k)
-		if XX < 30:
-			new_fof_min += 1	
+	#new_fof_min = 0
+	#for k in range(N_as_min):
+	#	XX = groups1.count(k)
+	#	if XX < 30:
+	#		new_fof_min += 1	
         ## Esto sobrescribe los datos de las asociaciones--------------------------
         f = open("data/A_min" + snap_fof, "w") 
 	for j in range(len(x)):
@@ -62,37 +62,49 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
 	fof_groups = np.loadtxt('fof.grp', skiprows=1)
 	groups2 = list(fof_groups)
         N_as_max = len(list(set(fof_groups)))
-	new_fof_max = 0
-        for k in range(N_as_min):
-      		XX = groups2.count(k)
-                if XX < 30:
-                        new_fof_max += 1
+	#new_fof_max = 0
+        #for k in range(N_as_min):
+      	#	XX = groups2.count(k)
+        #       if XX < 30:
+        #                new_fof_max += 1
         for j in range(len(x)):
         	f.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n" )%(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j]))
         f.close()
-	return new_fof_min, new_fof_max
+	#return new_fof_min, new_fof_max
 
 
 ###########################################################
 #                                                         #
-#  N_associations find the number of members per group    #
-#                                                         #
+#  N_associations find the number of members per assoc    #
+#  it also returns the maximum number of members in an    #
+#  association                                            #
 ###########################################################
 
-def N_associations(name):
-	N_count = []
-        Asso = []
-	data = np.loadtxt("data/" + name)
-        Nasso = data[:,6]
-        L = list(Nasso)
-        N = len(list(set(Nasso)))
-        for i in range(N):
-		x = L.count(i)
+def N_associations(snap_fof):
+	N_count_min = []
+	N_count_max = []
+        Asso_min = []
+	Asso_max = []
+	data_min = np.loadtxt("data/A_min" + snap_fof)
+	data_max = np.loadtxt("data/A_max" + snap_fof)
+        Nasso_min = data_min[:,6]
+	Nasso_max = data_max[:,6] 
+        L_min = list(Nasso_min)
+	L_max = list(Nasso_max)
+        N_min = len(list(set(Nasso_min)))
+ 	N_max = len(list(set(Nasso_max)))
+        for i in range(N_min):
+		x_min = L_min.count(i)
                 #if x<25:
-		N_count.append(x)
-                Asso.append(i)
-	X = np.sort(N_count)
-	return N_count, Asso, X[-1]
+		N_count_min.append(x_min)
+                Asso_min.append(i)
+	for j in range(N_max):
+		x_max = L_max.count(j)
+		N_count_max.append(x_max)
+		Asso_max.append(j)
+	X_min = np.sort(N_count_min)
+	X_max = np.sort(N_count_max) 
+	return N_count_min, Asso_min, X_min[-1], N_count_max, Asso_max, X_max[-1]
 
 ##########################################################
 #                                                        #
@@ -120,15 +132,15 @@ def dispersiones(snap_fof):
         N_as_min = len(list(set(N_min)))
         N_as_max = len(list(set(N_max)))
         sigmax_min = []
-        simgax_max = []
+        sigmax_max = []
 	sigmav_min = []
         sigmav_max = []
-        #rint "N ass = ", N_as_min
+        a, b, Mem_min, c, d, Mem_max = N_associations(snap_fof)
 	for i in range(int(min(list(set(N_min)))),int(max(list(set(N_min)))+1)):
         	index = np.where(N_min==i)
                 index = index[0]
 		#print "index=", len(index)
-                if (len(index)<25):
+                if (len(index)<Mem_min):
 			x_LLmin = x_min[index]
                 	y_LLmin = y_min[index]
                         z_LLmin = z_min[index]
@@ -157,7 +169,7 @@ def dispersiones(snap_fof):
 		#print "Nass max = ", N_as_max
                 index = np.where(N_max==i)
                 index = index[0]
-        	if (len(index)<25):
+        	if (len(index)<Mem_max):
 	        	x_LLmax = x_max[index]
                 	y_LLmax = y_max[index]
                 	z_LLmax = z_max[index]
@@ -184,35 +196,22 @@ def dispersiones(snap_fof):
                 	sigmax_max.append(np.std(X)) 
 	#print "-----DONE------" 
 	return sigmax_min, sigmav_min, sigmax_max, sigmav_max
-		
+
 	
-def threedplot(snap_fof):	
+def threedplot(snap_fof, N):	
 	data_min = np.loadtxt("data/A_min" + snap_fof)
-        data_max = np.loadtxt("data/A_max" + snap_fof)
-        X = []
-	Y = []
-	Z = []
+        #data_max = np.loadtxt("data/A_max" + snap_fof)
 	x_min = data_min[:,0]
         y_min = data_min[:,1]
         z_min = data_min[:,2]
-	x_max = data_max[:,0]
-        y_max = data_max[:,1]
-        z_max = data_max[:,2]
         N_min = data_min[:,6]
-        N_max = data_max[:,6]
-	N_as_min = len(list(set(N_min)))
-        N_as_max = len(list(set(N_max)))
-	#data = np.zeros([N_as_min], )
-        for i in range(int(min(list(set(N_max)))),int(max(list(set(N_max)))+1)):
-                index = np.where(N_max==i)
-                index = index[0]
-                x_LLmax = x_max[index]
-                y_LLmax = y_max[index]
-                z_LLmax = z_max[index]
-		for j in range(len(x_LLmax)):
-			X.append(x_LLmax[j])
-			Y.append(y_LLmax[j])
-			Z.append(z_LLmax[j])
+	#N_as_min = len(list(set(N_min)))
+        #N_as_max = len(list(set(N_max)))
+        index = np.where(N_min==N)
+        index = index[0]
+        X = x_min[index]
+        Y = y_min[index]
+        Z = z_min[index]
 	return X, Y, Z
 
 ##################################################
@@ -220,6 +219,14 @@ def threedplot(snap_fof):
 #                     DARKS                      #  
 #                                                #
 ##################################################
+
+
+def scatter_plot(snap_fof):
+	data_min = np.loadtxt("data/A_min" + snap_fof)
+	x_min = data_min[:,0]
+	y_min = data_min[:,1]
+	z_min = data_min[:,2]
+	plt.scater(x, y, z)
 
 def darks():
 	DM = np.loadtxt("data/A_minFOFDMIllustris_group_26.dat")
@@ -254,7 +261,7 @@ def darks():
 	YDM = y_dm[index2]
 	ZDM = z_dm[index2]
 
-	index3 = np.where((XDM == XS) && (YDM = YS) && (ZDM = ZS) )
+	index3 = np.where((XDM == XS) & (YDM == YS) & (ZDM == ZS) )
 	index3 = index3[0]
 	index4 = linspace(0, len(XDM), len(XDM))
 			

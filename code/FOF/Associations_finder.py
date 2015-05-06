@@ -23,7 +23,8 @@ Xdisp_obs = [350, 280,  320, 300, 260, 380, 310, 570] #Kpc check the h factor
 N_obs = [5, 6, 7, 4, 5, 3, 4, 4]
 
 f = open("Nass.txt", "w")
-
+f2 = open("maxmembers.txt", "w")
+f2.write("# group, mindm, maxdm, mins, maxs \n")
 for i in range (53):
 	print "Grupo =", i
 	snap_name = "Illustris_group_"+str(i)+".dat"
@@ -35,23 +36,24 @@ for i in range (53):
 	snap_fof_DM = "FOFDM" + snap_name
 	snap_fof_stars = "FOF_stars" + snap_name
 	# Running the FOF code
-	NDM_min, NDM_max = fof(x, y, z, vx, vy, vz, N_DM, snap_fof_DM)
-	Nstars_min, Nstars_max = fof(x_stars, y_stars, z_stars, vx_stars, vy_stars, vz_stars, N_stars, snap_fof_stars)
-	print "Dm min = ",  NDM_min, "DM max = ", NDM_max, "Stars min = ", Nstars_min, "Stars max = ", Nstars_max 
+	fof(x, y, z, vx, vy, vz, N_DM, snap_fof_DM)
+	fof(x_stars, y_stars, z_stars, vx_stars, vy_stars, vz_stars, N_stars, snap_fof_stars)
+	#rint "Dm min = ",  NDM_min, "DM max = ", NDM_max, "Stars min = ", Nstars_min, "Stars max = ", Nstars_max 
 	# Number of associations per groups
-	N_asso_dm_min.append(NDM_min)
-        N_asso_dm_max.append(NDM_max)
-	N_asso_stars_min.append(Nstars_min)
-	N_asso_stars_max.append(Nstars_max)
+	#N_asso_dm_min.append(NDM_min)
+        #N_asso_dm_max.append(NDM_max)
+	#N_asso_stars_min.append(Nstars_min)
+	#N_asso_stars_max.append(Nstars_max)
         # Numbre of memebers per association
-	Nass, asso =  N_associations("A_min"+snap_fof_DM)
+	Nass, asso, mind, Nass_max, asso, maxd  =  N_associations(snap_fof_DM)
         NassDM_min += Nass
-	Nass_max, asso =  N_associations("A_max"+snap_fof_DM)
         NassDM_max += Nass_max
-        Nass_stars, asso =  N_associations("A_min"+snap_fof_stars)
-        NassStars_min += Nass_stars
-        Nass_stars_max, asso =  N_associations("A_max"+snap_fof_stars)
+        Nass_stars, asso, mins , Nass_stars_max, asso, maxs =  N_associations(snap_fof_stars)
+	NassStars_min += Nass_stars
         NassStars_max += Nass_stars_max
+	f2.write(("%f \t %f \t %f \t %f \t %f \n")%(i, mind, maxd, mins, maxs))
+	#rint "DM: ", Nass , Nass_max
+	#rint "Stars: ", Nass_stars, Nass_stars_max
 	# Computing the dispersions
 	sigmax_min, sigmav_min, sigmax_max, sigmav_max = dispersiones(snap_fof_DM)
         sigmax_min_s, sigmav_min_s, sigmax_max_s, sigmav_max_s = dispersiones(snap_fof_stars)
@@ -63,50 +65,54 @@ for i in range (53):
         #                                                     #
         #######################################################
 	plt.figure(figsize=(15, 10))
-        plt.subplot(2, 2, 1)
+        plt.subplot(1, 1, 1)
 	plt.title(str(len(Nass)) + "  " + str(len(Nass_max)))
 	plt.scatter(sigmax_min, sigmav_min, c='r', marker = "H", alpha=1, s=180)
         plt.scatter(sigmax_max, sigmav_max, c='b', marker = "8", alpha=1, s=180)
 	plt.scatter(Xdisp_obs, Vdisp_obs, c='y', marker="*", s=180)
         plt.ylabel(r"$\sigma_v$", fontsize=25)
-	plt.subplot(2, 2, 3)
-	plt.scatter(sigmax_min, Nass,  c='r', alpha=1, marker = "H", s=180)
-        plt.scatter(sigmax_max, Nass_max, c='b', marker = "8", alpha=1, s=180)
-        plt.scatter(Xdisp_obs, N_obs, c='y', marker="*", s=180)
-        plt.ylabel(r"$Number\ of\ Members$", fontsize=25)
+	#plt.subplot(2, 2, 3)
+	#plt.scatter(sigmax_min, Nass,  c='r', alpha=1, marker = "H", s=180)
+        #plt.scatter(sigmax_max, Nass_max, c='b', marker = "8", alpha=1, s=180)
+        #plt.scatter(Xdisp_obs, N_obs, c='y', marker="*", s=180)
+        #plt.ylabel(r"$Number\ of\ Members$", fontsize=25)
+        #plt.xlabel(r"$\sigma_x$", fontsize=25)
+	#plt.subplot(2, 2, 4)
+        #plt.scatter(sigmav_min, Nass, c='r', alpha=1,  marker = "H", s=180)
+        #plt.scatter(sigmav_max, Nass_max, c='b', marker = "8", alpha=1, s=180)
+        #plt.scatter(Vdisp_obs, N_obs, c='y', marker="*", s=180)
         plt.xlabel(r"$\sigma_x$", fontsize=25)
-	plt.subplot(2, 2, 4)
-        plt.scatter(sigmav_min, Nass, c='r', alpha=1,  marker = "H", s=180)
-        plt.scatter(sigmav_max, Nass_max, c='b', marker = "8", alpha=1, s=180)
-        plt.scatter(Vdisp_obs, N_obs, c='y', marker="*", s=180)
-        plt.xlabel(r"$\sigma_v$", fontsize=25)
         #plt.show()
 	plt.savefig("figures/Association" + str(i) + ".png")
         plt.close()
 
 	#print len(sigmax_min), len(Nass)
         plt.figure(figsize=(15, 10))
-        plt.subplot(2, 2, 1)
+        plt.subplot(1 ,1, 1)
 	plt.title(str(len(Nass_stars)) + "  "+ str(len(Nass_stars_max)))
         plt.scatter(sigmax_min_s, sigmav_min_s, c='r', marker = "H", alpha=1, s=180)
         plt.scatter(sigmax_max_s, sigmav_max_s, c='b', marker = "8", alpha=1, s=180)
         plt.scatter(Xdisp_obs, Vdisp_obs, c='y', marker="*", s=180)
 	plt.ylabel(r"$\sigma_v$", fontsize=25)
-        plt.subplot(2, 2, 3)
-        plt.scatter(sigmax_min_s, Nass_stars, c='r', marker = "H", alpha=1, s=180)
-        plt.scatter(sigmax_max_s, Nass_stars_max, c='b', marker = "8", alpha=1, s=180)
-        plt.scatter(Xdisp_obs, N_obs,  c='y', marker="*", s=180)
-	plt.ylabel(r"$Number\ of\ Members$", fontsize=25)
+        #plt.subplot(2, 2, 3)
+        #plt.scatter(sigmax_min_s, Nass_stars, c='r', marker = "H", alpha=1, s=180)
+        #plt.scatter(sigmax_max_s, Nass_stars_max, c='b', marker = "8", alpha=1, s=180)
+        #plt.scatter(Xdisp_obs, N_obs,  c='y', marker="*", s=180)
+	#plt.ylabel(r"$Number\ of\ Members$", fontsize=25)
 	plt.xlabel(r"$\sigma_x$", fontsize=25)
-        plt.subplot(2, 2, 4)
-        plt.scatter(sigmav_min_s, Nass_stars,  c='r',  marker = "H", alpha=1, s=180)
-        plt.scatter(sigmav_max_s, Nass_stars_max ,marker = "8", c='b', alpha=1, s=180)
-        plt.scatter(Vdisp_obs, N_obs,  c='y', marker="*", s=180)
-	plt.xlabel(r"$\sigma_v$", fontsize=25)
+        #plt.subplot(2, 2, 4)
+        #plt.scatter(sigmav_min_s, Nass_stars,  c='r',  marker = "H", alpha=1, s=180)
+        #plt.scatter(sigmav_max_s, Nass_stars_max ,marker = "8", c='b', alpha=1, s=180)
+        #plt.scatter(Vdisp_obs, N_obs,  c='y', marker="*", s=180)
+	#plt.xlabel(r"$\sigma_v$", fontsize=25)
         #plt.show()
         plt.savefig("figures/ObsAssociation" + str(i) + ".png")
         plt.close()
+"""
+f2.close()	
 f.close()
+XX, YY, ZZ = threedplot("FOFDMIllustris_group_0.dat")
+
 plt.figure(figsize=(15, 10))
 plt.subplot(1, 2, 1)
 plt.hist(N_asso_dm_min, color='k', alpha=0.8, label=r"$\mathrm{LL = 526Mpc\ h^{-1}}$", bins=range(0, 20 + 1, 1))
@@ -148,7 +154,6 @@ plt.savefig("Nmembersassociations.png", bbox_inches="tight")
 plt.close()
 
 
-"""
 print "Dark Matter"
 print "------------"
 print "N max", NDM_max
