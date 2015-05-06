@@ -88,10 +88,11 @@ def N_associations(name):
         N = len(list(set(Nasso)))
         for i in range(N):
 		x = L.count(i)
-                if x<25:
-			N_count.append(x)
-                	Asso.append(i)
-	return N_count, Asso
+                #if x<25:
+		N_count.append(x)
+                Asso.append(i)
+	X = np.sort(N_count)
+	return N_count, Asso, X[-1]
 
 ##########################################################
 #                                                        #
@@ -116,12 +117,11 @@ def dispersiones(snap_fof):
         vy_max = data_max[:,4]
         vz_max = data_max[:,5]
         N_max = data_max[:,6]
-       	N_min = data_min[:,6]
         N_as_min = len(list(set(N_min)))
         N_as_max = len(list(set(N_max)))
         sigmax_min = []
-        sigmav_min = []
-        sigmax_max = []# The +1 is beacuse the snap17 max have all the memebers in 1 a in 2 so it doesnt have 0 and sigmav_max brokes
+        simgax_max = []
+	sigmav_min = []
         sigmav_max = []
         #rint "N ass = ", N_as_min
 	for i in range(int(min(list(set(N_min)))),int(max(list(set(N_min)))+1)):
@@ -184,7 +184,34 @@ def dispersiones(snap_fof):
                 	sigmax_max.append(np.std(X)) 
 	#print "-----DONE------" 
 	return sigmax_min, sigmav_min, sigmax_max, sigmav_max
-#def 3dplot(x, y, z)
-			
+		
 	
+def threedplot(snap_fof):	
+	data_min = np.loadtxt("data/A_min" + snap_fof)
+        data_max = np.loadtxt("data/A_max" + snap_fof)
+        X = []
+	Y = []
+	Z = []
+	x_min = data_min[:,0]
+        y_min = data_min[:,1]
+        z_min = data_min[:,2]
+	x_max = data_max[:,0]
+        y_max = data_max[:,1]
+        z_max = data_max[:,2]
+        N_min = data_min[:,6]
+        N_max = data_max[:,6]
+	N_as_min = len(list(set(N_min)))
+        N_as_max = len(list(set(N_max)))
+	#data = np.zeros([N_as_min], )
+        for i in range(int(min(list(set(N_max)))),int(max(list(set(N_max)))+1)):
+                index = np.where(N_max==i)
+                index = index[0]
+                x_LLmax = x_max[index]
+                y_LLmax = y_max[index]
+                z_LLmax = z_max[index]
+		for j in range(len(x_LLmax)):
+			X.append(x_LLmax[j])
+			Y.append(y_LLmax[j])
+			Z.append(z_LLmax[j])
+	return X, Y, Z
 
