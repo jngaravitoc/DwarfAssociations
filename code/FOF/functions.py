@@ -28,6 +28,7 @@ def stars(x, y, z, vx, vy, vz, Mag):
 
 def fof(x, y, z, vx, vy, vz, N, snap_fof):
 	f = open(snap_fof, "w")
+	print "This is N:", N
 	f.write("%d\n"%N) #points in total 
 	f.write("%d\n"%N) #points in 'DM'
 	f.write("0\n") #gas
@@ -46,31 +47,22 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
         fof_groups = np.loadtxt('fof.grp', skiprows=1)
 	groups1 = list(fof_groups)
 	N_as_min = len(list(set(fof_groups)))
-	#new_fof_min = 0
-	#for k in range(N_as_min):
-	#	XX = groups1.count(k)
-	#	if XX < 30:
-	#		new_fof_min += 1	
-        ## Esto sobrescribe los datos de las asociaciones--------------------------
-        f = open("data/A_min" + snap_fof, "w") 
+	print "Number of Associations min L min LL", N_as_min
+        f1 = open("data/A_min" + snap_fof, "w") 
 	for j in range(len(x)):
-		f.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n" )%(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j]))        
-        f.close()
-        f = open("data/A_max" + snap_fof, "w")
+		f1.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n" )%(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j]))        
+        f1.close()
         #  [-px <xPeriod>] [-py <yPeriod>] [-pz <zPeriod>] FOF periodic conditions       
         os.system(('./../../../HackFOF/src/fof -e %f -m 2  -px 75000 -py 75000 -pz 75000 < '+ snap_fof)%(LL_max*h)) 
 	fof_groups = np.loadtxt('fof.grp', skiprows=1)
 	groups2 = list(fof_groups)
         N_as_max = len(list(set(fof_groups)))
-	#new_fof_max = 0
-        #for k in range(N_as_min):
-      	#	XX = groups2.count(k)
-        #       if XX < 30:
-        #                new_fof_max += 1
-        for j in range(len(x)):
-        	f.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n" )%(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j]))
-        f.close()
-	#return new_fof_min, new_fof_max
+	print "Numer of Associations max LL", N_as_max
+        f2 = open("data/A_max" + snap_fof, "w")
+	for j in range(len(x)):
+        	f2.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n" )%(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j]))
+        f2.close()
+	
 
 
 ###########################################################
