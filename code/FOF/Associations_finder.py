@@ -25,7 +25,7 @@ N_obs = [5, 6, 7, 4, 5, 3, 4, 4]
 f = open("Nass.txt", "w")
 f2 = open("maxmembers.txt", "w")
 f2.write("# group, mindm, maxdm, mins, maxs \n")
-for i in range (53):
+for i in range (3):
 	print "Grupo =", i
 	snap_name = "Illustris_group_"+str(i)+".dat"
 	x, y, z, vx, vy, vz, Mag =  loading_snapshot("../../data/Illustris/" + snap_name)
