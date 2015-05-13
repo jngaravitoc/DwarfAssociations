@@ -27,8 +27,7 @@ def stars(x, y, z, vx, vy, vz, Mag):
 # fof runs the fof algorithm.
 
 def fof(x, y, z, vx, vy, vz, N, snap_fof):
-	f = open(snap_fof, "w")
-	print "This is N:", N
+	f = open("data/" + snap_fof, "w")
 	f.write("%d\n"%N) #points in total 
 	f.write("%d\n"%N) #points in 'DM'
 	f.write("0\n") #gas
@@ -43,21 +42,19 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
         # here I define the linking lenghts 
         LL_min = 526 # Linking Lenght in Kpc, taken from observational treshold (FOF-observed-associations.ipynb)
         LL_max = 724 # Max Linking Length in Kpc
-        os.system(('./../../../HackFOF/src/fof -e %f -m 2  -px 75000 -py 75000 -pz 75000 < ' +  snap_fof)%(LL_min*h)) 
+        os.system(('./../../../HackFOF/src/fof -e %f -m 2  -px 75000 -py 75000 -pz 75000 < data/' +  snap_fof)%(LL_min*h)) 
         fof_groups = np.loadtxt('fof.grp', skiprows=1)
 	groups1 = list(fof_groups)
 	N_as_min = len(list(set(fof_groups)))
-	print "Number of Associations min L min LL", N_as_min
         f1 = open("data/A_min" + snap_fof, "w") 
 	for j in range(len(x)):
 		f1.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n" )%(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j]))        
         f1.close()
         #  [-px <xPeriod>] [-py <yPeriod>] [-pz <zPeriod>] FOF periodic conditions       
-        os.system(('./../../../HackFOF/src/fof -e %f -m 2  -px 75000 -py 75000 -pz 75000 < '+ snap_fof)%(LL_max*h)) 
+        os.system(('./../../../HackFOF/src/fof -e %f -m 2  -px 75000 -py 75000 -pz 75000 < data/'+ snap_fof)%(LL_max*h)) 
 	fof_groups = np.loadtxt('fof.grp', skiprows=1)
 	groups2 = list(fof_groups)
         N_as_max = len(list(set(fof_groups)))
-	print "Numer of Associations max LL", N_as_max
         f2 = open("data/A_max" + snap_fof, "w")
 	for j in range(len(x)):
         	f2.write(("%f \t %f \t %f \t %f \t %f \t %f \t %f \n" )%(x[j], y[j], z[j], vx[j], vy[j], vz[j], fof_groups[j]))
@@ -73,10 +70,10 @@ def fof(x, y, z, vx, vy, vz, N, snap_fof):
 ###########################################################
 
 def N_associations(snap_fof):
-	N_count_min = []
-	N_count_max = []
-        Asso_min = []
-	Asso_max = []
+	N_count_min = [] # Number of members for LL min
+	N_count_max = [] # Number of members for LL max
+        Asso_min = [] # Number of association for LL min
+	Asso_max = [] # Number of association for LL max
 	data_min = np.loadtxt("data/A_min" + snap_fof)
 	data_max = np.loadtxt("data/A_max" + snap_fof)
         Nasso_min = data_min[:,6]
@@ -87,8 +84,7 @@ def N_associations(snap_fof):
  	N_max = len(list(set(Nasso_max)))
         for i in range(N_min):
 		x_min = L_min.count(i)
-                #if x<25:
-		N_count_min.append(x_min)
+                N_count_min.append(x_min)
                 Asso_min.append(i)
 	for j in range(N_max):
 		x_max = L_max.count(j)
@@ -131,7 +127,6 @@ def dispersiones(snap_fof):
 	for i in range(int(min(list(set(N_min)))),int(max(list(set(N_min)))+1)):
         	index = np.where(N_min==i)
                 index = index[0]
-		#print "index=", len(index)
                 if (len(index)<Mem_min):
 			x_LLmin = x_min[index]
                 	y_LLmin = y_min[index]
